@@ -1,574 +1,196 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Global Market Explorer · Amul Dark Chocolate × UAE · Premium Market Intelligence</title>
-<!-- External dependencies (need internet): Google Fonts, Apache ECharts 5.5.1, D3 v7, topojson-client 3, world-atlas 2 (country shapes), Lucide icons. All other code is in this file. -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tata Tea Gold UAE – Market Explorer</title>
 <style>
-:root{
-  --bg:#171716;--side:#1D1D1B;--card:#242422;--card2:#2B2A27;
-  --gold:#D9AF79;--gold-l:#F2D2A6;--bronze:#A77C4E;--bronze-d:#72563C;
-  --tx:#F3EFE9;--tx2:#B3ADA3;--tx3:#85817A;--line:#393630;
-  --pos:#83B49B;--neg:#C97870;--warn:#D6AD72;
-  --grad:linear-gradient(90deg,#72563C 0%,#A77C4E 45%,#D9AF79 80%,#F2D2A6 100%);
-  --r:12px;--sw:64px;--swx:236px;
-  --f-ui:'Manrope','Inter',system-ui,sans-serif;--f-num:'DM Sans','Manrope',sans-serif;--f-head:'Playfair Display',Georgia,serif;
-  --shadow:0 1px 0 rgba(255,255,255,.03) inset,0 10px 28px rgba(0,0,0,.35);
-}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--f-ui);font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased}
-body{background:radial-gradient(1200px 600px at 75% -10%,rgba(217,175,121,.06),transparent 60%),radial-gradient(900px 500px at -10% 110%,rgba(167,124,78,.05),transparent 60%),var(--bg);min-height:100vh;overflow-x:hidden}
-a{color:var(--gold)}a:hover{color:var(--gold-l)}
-button,input,select{font-family:inherit;font-size:12px;color:var(--tx)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+:root{--bg:#0a0f2c;--cd:rgba(16,12,40,.58);--ln:rgba(242,184,75,.24);--tx:#f8f3e8;--mu:#c9bfa8;--gn:#2dd4bf;--cy:#2dd4bf;--pu:#c084fc;--gd:#f2b84b;--rd:#f87171;--ok:#4ade80;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{color-scheme:dark}
+body{margin:0;min-height:100vh;display:flex;color:var(--tx);font:17px/1.55 Inter,"Segoe UI",system-ui,Helvetica,Arial,sans-serif;background:radial-gradient(900px 600px at 105% 0%,rgba(45,212,191,.4),transparent 60%),radial-gradient(800px 700px at 105% 65%,rgba(224,138,60,.38),transparent 60%),var(--bg);background-attachment:fixed}
+h1,h2,h3{color:#fff;line-height:1.2;margin:0 0 .4em;font-weight:700}h1{font-size:clamp(28px,4vw,42px)}h2{font-size:clamp(22px,3vw,30px)}h3{font-size:19px}
+header{width:92px;flex:none;margin:16px 0 16px 16px;padding:14px 6px;border-radius:22px;background:var(--cd);border:1px solid var(--ln);backdrop-filter:blur(14px);position:sticky;top:16px;height:calc(100vh - 32px)}header b,header small{display:none}
+nav{display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+nav button{background:none;border:0;color:var(--mu);padding:10px 2px;border-radius:14px;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;transition:.25s}nav button i{font-style:normal;font-size:22px}
+nav button[aria-selected=true],nav button:hover{background:rgba(242,184,75,.22);color:#ffd98a;box-shadow:0 0 18px rgba(242,184,75,.35)}
+main{flex:1;min-width:0;max-width:1180px;padding:20px 22px 60px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;padding:16px 22px;border-radius:20px;background:var(--cd);border:1px solid var(--ln);backdrop-filter:blur(14px)}.top small{color:var(--mu);display:block;font-size:13px}.top .ttl{font-size:22px;font-weight:700}.pill{font-size:13px;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid var(--ln);white-space:nowrap}
+section{display:none}section.on{display:block;animation:up .5s both}@keyframes up{from{opacity:0;transform:translateY(14px)}}
+.q{font-size:clamp(18px,2.4vw,22px);color:var(--mu);margin:0 0 18px}
+.panel{background:var(--cd);border:1px solid var(--ln);border-radius:20px;padding:22px;margin:16px 0;backdrop-filter:blur(14px);transition:border-color .3s,box-shadow .3s}.panel:hover{border-color:rgba(242,184,75,.35);box-shadow:0 0 28px rgba(242,184,75,.15)}
+.take{border-left:4px solid var(--gd);background:rgba(242,184,75,.1);border-radius:0 14px 14px 0;padding:14px 18px;margin:16px 0;font-size:18px}
+.warn{border-left:4px solid var(--rd);background:rgba(248,113,113,.1);border-radius:0 12px 12px 0;padding:12px 16px;font-size:15px;margin:12px 0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+button.b,select,input[type=number]{font-size:16px;font-family:inherit;padding:9px 16px;border-radius:99px;border:1px solid var(--ln);background:rgba(255,255,255,.07);color:var(--tx);cursor:pointer;margin:0 6px 8px 0}
+select option{background:#14102f}input[type=number]{width:100%;cursor:text;margin:0;border-radius:12px}
+button.b:hover{border-color:var(--gn)}button.b[aria-pressed=true],button.b[aria-checked=true]{background:linear-gradient(135deg,var(--gn),var(--pu));color:#fff;border-color:transparent;box-shadow:0 0 16px rgba(242,184,75,.45)}
+:focus-visible{outline:3px solid var(--cy);outline-offset:2px}
+table{border-collapse:collapse;width:100%;font-size:16px}th,td{padding:9px 8px;border-bottom:1px solid var(--ln);text-align:left;vertical-align:top}th{color:#ffd98a}
+tr.sel{background:rgba(242,184,75,.18)}tr.maj td{padding:18px 8px;font-size:17px}tr[tabindex]{cursor:pointer}tr[tabindex]:hover{background:rgba(255,255,255,.05)}
+.row{display:flex;align-items:center;gap:10px;margin:9px 0}.row span{width:190px;flex:none}.row b{width:110px;text-align:right;flex:none}
+.tr{flex:1;height:24px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}.tr i{display:block;height:100%;background:linear-gradient(90deg,var(--gn),var(--cy));border-radius:99px;transition:width .5s}.tr i.gd{background:linear-gradient(90deg,#e08a3c,var(--gd))}.tr i.ng{background:#7c7a8c}
+.tag{font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;display:inline-block}.t1{background:rgba(74,222,128,.15);color:#4ade80}.t2{background:rgba(192,132,252,.2);color:#e9d5ff}.t3{background:rgba(242,184,75,.16);color:#fbbf24}.t4{background:rgba(45,212,191,.15);color:#ffd98a}
+details.src{font-size:14px;color:var(--mu);margin-top:10px}details.src summary{cursor:pointer;color:var(--cy);font-weight:600}a{color:var(--cy)}
+.big{font-size:46px;color:var(--gd);font-weight:700;line-height:1.1;text-shadow:0 0 26px currentColor}
+input[type=range]{width:100%;accent-color:var(--gn)}label{display:block;font-size:15px;color:var(--mu)}
+svg{width:100%;height:auto;fill:#f8f3e8}svg text{font-family:Inter,"Segoe UI",system-ui,sans-serif}
+@media(max-width:800px){body{display:block}header{position:sticky;top:0;z-index:5;width:auto;height:auto;margin:0;border-radius:0 0 16px 16px;padding:6px}nav{flex-direction:row}nav button{flex:1;min-width:64px}main{padding:14px 12px}.g2{grid-template-columns:1fr}.row span{width:110px}.row b{width:80px}th,td{padding:7px 4px;font-size:14px}}
+body::before,body::after{content:"";position:fixed;width:460px;height:460px;border-radius:50%;filter:blur(110px);z-index:-1;pointer-events:none;animation:orb 16s ease-in-out infinite alternate}body::before{background:rgba(45,212,191,.22);top:-120px;left:35%}body::after{background:rgba(224,138,60,.2);bottom:-140px;right:4%;animation-delay:-8s}@keyframes orb{to{transform:translate(90px,70px) scale(1.2)}}
+.panel{position:relative}.panel::before{content:"";position:absolute;inset:0;border-radius:20px;background:radial-gradient(280px circle at var(--mx,50%) var(--my,0),rgba(242,184,75,.12),transparent 60%);opacity:0;transition:.3s;pointer-events:none}.panel:hover::before{opacity:1}
+#c0 rect{transform-box:fill-box;transform-origin:bottom;animation:grow .9s cubic-bezier(.2,.8,.2,1) both}@keyframes grow{from{transform:scaleY(0)}}
+.ln{stroke-dasharray:1;animation:dr 1.6s ease both}@keyframes dr{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.rd{transform-origin:150px 130px;animation:zm .8s both}@keyframes zm{from{transform:scale(0);opacity:0}}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:16px 0}
+.kpi{text-align:left;background:var(--cd);border:1px solid var(--ln);border-radius:18px;padding:16px;color:var(--tx);cursor:pointer;font-family:inherit;transition:.25s;animation:up .6s both}.kpi:hover{transform:translateY(-4px);border-color:var(--gn);box-shadow:0 8px 30px rgba(242,184,75,.25)}.kpi small{display:block;color:var(--mu);font-size:13px}.kpi b{font-size:30px;color:#fff;display:block}.kpi i{font-style:normal;font-size:12px;color:var(--cy)}
+.flow{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.step{flex:1;min-width:140px;display:flex;align-items:center;gap:10px;text-align:left;background:var(--cd);border:1px solid var(--ln);border-radius:16px;padding:12px;color:var(--tx);cursor:pointer;font:inherit;font-size:15px;animation:up .6s both;transition:.25s}.step:hover{border-color:var(--gd);box-shadow:0 0 20px rgba(242,184,75,.25)}.step b{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gn),var(--pu))}
+#tip{position:fixed;pointer-events:none;z-index:99;background:rgba(10,15,30,.96);border:1px solid var(--ln);padding:6px 11px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .15s;max-width:260px}
+rect[tabindex],circle[tabindex]{cursor:pointer}
+body{background:linear-gradient(180deg,#0a0f2c 0%,#1b1445 40%,#4b2250 64%,#b5483a 88%,#f2a35b 100%);background-attachment:fixed}
+h1{background:linear-gradient(90deg,#fff1cf,#f2b84b);-webkit-background-clip:text;background-clip:text;color:transparent}
+#pat{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cg fill='none' stroke='%23f2b84b' stroke-width='1.2'%3E%3Crect x='14' y='14' width='36' height='36'/%3E%3Crect x='14' y='14' width='36' height='36' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3C/g%3E%3C/svg%3E")}
+#sky{position:fixed;left:0;right:0;bottom:0;width:100%;height:26vh;z-index:-1;fill:#070a22;opacity:.95;pointer-events:none}
+.top{position:relative;overflow:hidden}.top>div,.top>span{position:relative;z-index:1}.mini{position:absolute;right:0;bottom:0;height:100%;width:auto;fill:rgba(242,184,75,.28);pointer-events:none}
+button.b[aria-pressed=true],button.b[aria-checked=true]{background:linear-gradient(135deg,#f2b84b,#e08a3c);color:#1b1330;box-shadow:0 0 16px rgba(242,184,75,.45)}
+.step b{background:linear-gradient(135deg,#f2b84b,#e08a3c);color:#1b1330}
+.tr i{background:linear-gradient(90deg,#0d9488,#5eead4)}.tr i.gd{background:linear-gradient(90deg,#e08a3c,#ffd98a)}
+.t4{background:rgba(45,212,191,.15);color:#5eead4}input[type=range]{accent-color:#f2b84b}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><g id="sk"><path d="M0 200V168H34V140H60V172H96V128H120V160H150V118H172V150H205V176H236V200Z"/><path d="M240 200L244 120Q262 92 280 52L286 52Q292 120 296 200Z"/><rect x="296" y="168" width="40" height="32"/><path d="M340 200V150H372V122H400V158H430V134H458V176H492V200Z"/><path d="M556 200L562 140H570L574 100H580L584 62H590L594 30L598 4L602 30L606 62H612L616 100H622L626 140H634L640 200Z"/><path d="M650 200V150H678V118H700V160H734V136H760V176H800V200Z"/><rect x="830" y="82" width="14" height="118"/><rect x="896" y="82" width="14" height="118"/><rect x="826" y="74" width="88" height="14"/><path d="M930 200V160H958V126H984V158H1020V104H1040V148H1074V170H1110V138H1138V176H1170V150H1200V200Z"/></g></defs></svg>
+<div id="pat"></div><svg id="sky" viewBox="0 0 1200 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><use href="#sk"/></svg>
+<header><b>Tata Consumer Products · Market research briefing</b><small>Tata Tea Gold in the UAE: Market Explorer</small>
+<nav role="tablist" aria-label="Sections" id="nav"></nav></header>
+<main>
+<div class="top"><svg class="mini" viewBox="0 0 1200 200" preserveAspectRatio="xMaxYMax meet" aria-hidden="true"><use href="#sk"/></svg><div><small>Tata Consumer Products · Market research briefing · Dubai, UAE</small><div class="ttl">Tata Tea Gold in the UAE</div></div><span class="pill" id="dt"></span></div>
+<section id="p0"><h1>Why test Tata Tea Gold in Dubai?</h1><p class="q">Does the trade evidence justify a measured pilot of the 250 g pack?</p>
+<div class="panel"><h3>Recommendation</h3>Pilot the 250 g pack through a UAE distributor, targeting Indian expatriate households in Dubai that regularly brew loose chai. Test first, then decide on wider expansion.</div>
+<div class="kpis"><button class="kpi" onclick="go(1)" style="animation-delay:.05s"><small>UAE population, 2025</small><b><span data-n="11.51" data-d="2">11.51</span>M</b><i>World Bank</i></button><button class="kpi" onclick="go(1)" style="animation-delay:.12s"><small>GDP per capita, 2024</small><b>US$<span data-n="50273.5" data-d="1">50,273.5</span></b><i>World Bank</i></button><button class="kpi" onclick="go(1)" style="animation-delay:.19s"><small>India’s share of tea imports, 2023</small><b><span data-n="38.0" data-d="1">38.0</span>%</b><i>WITS / UN Comtrade</i></button><button class="kpi" onclick="go(1)" style="animation-delay:.26s"><small>Gold 250 g shelf price</small><b>AED <span data-n="14.5" data-d="2">14.50</span></b><i>Talabat, 21 Nov 2026</i></button></div>
+<div class="flow"><button class="step" onclick="go(1)" style="animation-delay:.1s"><b>1</b>Trade evidence</button><button class="step" onclick="go(1)" style="animation-delay:.2s"><b>2</b>Price gap</button><button class="step" onclick="go(2)" style="animation-delay:.3s"><b>3</b>Target segment</button><button class="step" onclick="go(3)" style="animation-delay:.4s"><b>4</b>Risks</button><button class="step" onclick="go(4)" style="animation-delay:.5s"><b>5</b>Pilot test</button></div>
+<div class="panel"><h3>UAE tea imports, total vs from India (US$ million, HS 0902)</h3><div id="c0"></div><div id="s0"></div></div>
+<div class="take" id="tk0"></div>
+<button class="b" onclick="go(1)">Supporting market data →</button><button class="b" onclick="go(4)">Pilot assumptions →</button>
+<div class="panel"><h3>Method and evidence flags</h3><p>AI helped structure the analysis, suggest the three candidate segments and the five scoring criteria, and draft this dashboard. AI output was treated as a draft. Checked against published sources: population, GDP per capita, tea trade values, the Talabat listing and prices, CEPA, Dubai Municipality and labelling rules, and VAT. Segment scores are analyst judgments.</p>
+<div class="warn"><b>Discrepancy:</b> the analysis cites 4.3 million Indian nationals (2024) and about 35% of residents. The Embassy page I re-opened (updated 10 Nov 2026) says “over 4.5 million” and “roughly about 35 percent”, with no reference year. On World Bank population, 4.3M is 39.1% of 2024 (10.99M) and 37.4% of 2025 (11.51M). Treat it as an Embassy estimate, not a calculated share. Growth of 4.8% also becomes 4.7% on the rounded population values.</div>
+<p><b>Missing evidence:</b> Noon listing, nationwide distribution, sales, market share, size of the household segment, willingness to pay, repeat rates, supplier behind the Talabat listing, the CEPA tariff line for Gold, and Kenya and Sri Lanka supply for 2022.</p></div></section>
 
-/* sidebar */
-.side{position:fixed;inset:0 auto 0 0;width:var(--sw);background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40;transition:width .3s ease}
-body.side-open .side{width:var(--swx)}
-.side-top{display:flex;align-items:center;gap:10px;padding:14px 16px;height:58px;border-bottom:1px solid var(--line)}
-.logo{width:32px;height:32px;border-radius:10px;background:var(--grad);display:grid;place-items:center;color:#1b1a18;font-family:var(--f-head);font-weight:600;font-size:15px;flex:none;box-shadow:0 0 18px rgba(217,175,121,.25)}
-.brand-t{white-space:nowrap;overflow:hidden;opacity:0;transition:opacity .2s}
-body.side-open .brand-t{opacity:1}
-.brand-t b{display:block;font-family:var(--f-head);font-weight:500;font-size:14px;color:var(--gold-l)}
-.brand-t span{font-size:10px;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase}
-.nav{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 0;position:relative;scrollbar-width:none}
-.nav::-webkit-scrollbar{display:none}
-.nav-ind{position:absolute;left:0;width:3px;height:34px;border-radius:0 3px 3px 0;background:var(--grad);transition:transform .35s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 10px rgba(217,175,121,.5)}
-.nav button{display:flex;align-items:center;gap:12px;width:100%;height:34px;margin:2px 0;padding:0 20px;background:none;border:0;color:var(--tx3);cursor:pointer;position:relative;white-space:nowrap;text-align:left}
-.nav button svg{width:18px;height:18px;flex:none;stroke-width:1.6}
-.nav button span{opacity:0;transition:opacity .2s;font-size:12.5px}
-body.side-open .nav button span{opacity:1}
-.nav button:hover{color:var(--gold-l)}
-.nav button.on{color:var(--gold)}
-.nav button.on::before{content:"";position:absolute;inset:3px 10px;border-radius:8px;background:rgba(217,175,121,.08)}
-.nav-tip{position:fixed;left:calc(var(--sw) + 6px);background:var(--card2);border:1px solid var(--line);color:var(--tx);padding:5px 9px;border-radius:7px;font-size:11.5px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:60;white-space:nowrap}
-body.side-open .nav-tip{display:none}
-.side-bot{border-top:1px solid var(--line);padding:8px 0}
+<section id="p1"><h1>How expensive is Tata Tea Gold?</h1><p class="q">Compare Gold with each alternative at the same retailer, per 100 g.</p>
+<div class="panel"><h3>Choose a competitor</h3><div role="radiogroup" aria-label="Competitor" id="cpb"></div><div class="g2"><div id="cpc"></div><div id="cpo"></div></div><div id="s1"></div></div>
+<div class="take" id="tk1"></div>
+<div class="panel"><h3>Price test: what if Tata sets Gold’s 250 g pack at…</h3><label>Shelf price: <b id="ppv">AED 14.50</b> (observed AED 14.50)<input type="range" id="pp" min="8" max="22" step="0.5" value="14.5" oninput="ppu()"></label><div id="ppo"></div><span class="tag t4">What-if, not an observation</span></div>
+<div class="panel"><h3>Who supplies UAE tea? HS 0902, US$ million</h3>
+<label>Year <select id="sy" onchange="sup()"><option>2023</option><option>2022</option></select></label>
+<div><button class="b" id="mv" aria-pressed="true" onclick="smode('v')">Import value</button><button class="b" id="ms" aria-pressed="false" onclick="smode('s')">Share of UAE imports</button></div>
+<div id="sb"></div><p id="sn" style="font-size:15px;color:var(--mu)"></p>
+<div class="row"><span>HS 090230 black tea ≤3 kg, 2023</span><div class="tr"><i class="gd" style="width:17.8%"></i></div><b>39.30 (17.8%)</b></div>
+<p style="font-size:15px;color:var(--mu)">HS 090230 is the category closest to a 250 g pack. Trade values record goods crossing the border, not household purchases; the UAE re-exports tea and imports bulk blending tea; data are annual. The year selector changes trade data only, never the retail prices above.</p><div id="s1b"></div></div></section>
 
-/* main */
-.main{margin-left:var(--sw);transition:margin .3s ease;min-width:0}
-body.side-open .main{margin-left:var(--swx)}
-.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:10px 22px;height:58px;background:rgba(23,23,22,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.top h1{font-family:var(--f-head);font-weight:500;font-size:17px;margin:0;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.top h1 small{font-family:var(--f-ui);font-size:11px;color:var(--tx3);margin-left:10px;letter-spacing:.06em;text-transform:uppercase}
-.top .sp{flex:1}
-.search{position:relative}
-.search input{width:220px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 10px 7px 30px;outline:none}
-.search input:focus{border-color:var(--bronze)}
-.search svg{position:absolute;left:9px;top:8px;width:14px;height:14px;color:var(--tx3)}
-.sres{position:absolute;top:36px;right:0;width:340px;max-height:360px;overflow:auto;background:var(--card2);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);display:none;z-index:50}
-.sres.on{display:block}
-.sres button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:8px 12px;cursor:pointer}
-.sres button:hover{background:rgba(217,175,121,.07)}
-.sres b{color:var(--gold);font-weight:600;font-size:12px}.sres span{display:block;color:var(--tx3);font-size:11px}
-.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:2px}
-.seg button{background:none;border:0;padding:5px 10px;border-radius:7px;color:var(--tx3);cursor:pointer;font-family:var(--f-num);font-weight:600}
-.seg button.on{background:var(--grad);color:#1b1a18}
-.ib{display:inline-grid;place-items:center;width:32px;height:32px;background:var(--card);border:1px solid var(--line);border-radius:9px;cursor:pointer;color:var(--tx2)}
-.ib:hover{color:var(--gold-l);border-color:var(--bronze-d)}
-.ib svg{width:16px;height:16px}
-.page{padding:18px 22px 60px;display:none}
-.page.on{display:block;animation:pg .45s ease}
-@keyframes pg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.ph{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:2px 0 14px;flex-wrap:wrap}
-.ph h2{font-family:var(--f-head);font-weight:500;font-size:22px;margin:0;color:var(--tx)}
-.ph p{margin:3px 0 0;color:var(--tx2);max-width:760px}
-.tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:20px;border:1px solid var(--line);color:var(--tx2);white-space:nowrap}
-.tag.v{color:var(--pos);border-color:rgba(131,180,155,.35)}.tag.e{color:var(--warn);border-color:rgba(214,173,114,.35)}.tag.s{color:#b9a3e6;border-color:rgba(185,163,230,.3)}.tag.f{color:#8fb3d9;border-color:rgba(143,179,217,.3)}.tag.r{color:var(--gold);border-color:rgba(217,175,121,.35)}
+<section id="p2"><h1>Who should Tata target?</h1><p class="q">Home-brewing households lead, but the lead depends on how much repeat purchase matters.</p>
+<div class="panel"><h3>Select a segment</h3><div role="radiogroup" aria-label="Segment" id="sgb"></div><div class="g2"><div id="sgd"></div><div id="rdr"></div></div></div>
+<div class="g2"><div class="panel"><h3>Weighted matrix <span class="tag t3">Analyst judgments</span></h3><div id="mx"></div><button class="b" onclick="rst()">Reset weights</button><button class="b" onclick="tie()">Show the 60% repeat tie</button></div>
+<div class="panel"><h3>Ranking (out of 5)</h3><div id="rk"></div><p id="ex"></p></div></div>
+<div class="panel"><h3>Sensitivity: totals as repeat-purchase weight rises (other four weights keep their proportions)</h3><label>Repeat-purchase weight: <b id="rwv">20%</b><input type="range" id="rw" min="0" max="100" value="20" aria-label="Repeat-purchase weight" oninput="rwu()"></label><p id="rwo"></p><div id="sv"></div><div id="s2"></div></div>
+<div class="take"><b>Positioning (household target):</b> For Indian expatriate households in Dubai who brew loose-leaf chai at home, Tata Tea Gold is the loose black tea that gives a rich, aromatic cup every day, because it blends valley-grown Assam teas with selected long leaves from a trusted Indian brand.</div></section>
 
-/* grid & cards */
-.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
-.c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
-.card{background:linear-gradient(180deg,var(--card2),var(--card) 38%);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);position:relative;min-width:0;transition:transform .25s ease,border-color .25s,box-shadow .25s}
-.card:hover{transform:translateY(-2px);border-color:#4a453c;box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 16px 34px rgba(0,0,0,.45)}
-.card.stagger{opacity:0;transform:translateY(10px)}
-.card.stagger.in{opacity:1;transform:none;transition:opacity .5s ease,transform .5s ease}
-.ch{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-svg{overflow:hidden}.main{overflow-x:hidden}
-.ch h3{margin:0;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx2);font-weight:600;display:flex;align-items:center;gap:7px}
-.ch h3 svg{width:14px;height:14px;color:var(--gold)}
-.tools{display:flex;gap:4px;align-items:center}
-.tb{width:24px;height:24px;display:grid;place-items:center;background:none;border:1px solid transparent;border-radius:6px;color:var(--tx3);cursor:pointer}
-.tb:hover{border-color:var(--line);color:var(--gold-l)}
-.tb svg{width:13px;height:13px}
-.chart{width:100%;height:230px}
-.chart.sm{height:170px}.chart.md{height:270px}.chart.lg{height:340px}
-.note{font-size:11px;color:var(--tx3);margin:8px 0 0}
-.muted{color:var(--tx3)}.dim{color:var(--tx2)}
-.kpi{font-family:var(--f-num);font-weight:600;font-size:26px;color:var(--tx);letter-spacing:-.01em;line-height:1.1}
-.kpi small{font-size:12px;color:var(--tx2);font-weight:500;margin-left:4px}
-.kl{font-size:10.5px;color:var(--tx3);text-transform:uppercase;letter-spacing:.09em}
-.gold{color:var(--gold)}.pos{color:var(--pos)}.neg{color:var(--neg)}.warn{color:var(--warn)}
-.ktile{display:grid;grid-template-columns:1fr 86px;gap:6px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.ktile:last-child{border-bottom:0}
-.ktile .spark{height:34px;width:86px}
-.src{font-size:10.5px;color:var(--tx3)}
-.src a{color:var(--bronze);text-decoration:none}.src a:hover{color:var(--gold-l)}
-.hint{cursor:help;border-bottom:1px dotted var(--tx3)}
+<section id="p3"><h1>Which factors change the decision?</h1><p class="q">Legal, price and trade factors matter most; select a row to see its source and the decision it affects.</p>
+<div class="panel"><div id="pf"></div><table><thead><tr><th>Factor</th><th>Evidence</th><th>Business impact</th><th>Tata’s response</th></tr></thead><tbody id="pt"></tbody></table></div>
+<div class="panel" id="pd" aria-live="polite"></div></section>
 
-/* bars */
-.pbar{margin:9px 0}
-.pbar .t{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
-.pbar .t b{font-family:var(--f-num);color:var(--gold-l);font-weight:600}
-.track{height:7px;border-radius:7px;background:#1b1b19;box-shadow:inset 0 1px 2px rgba(0,0,0,.5);overflow:hidden}
-.fill{height:100%;border-radius:7px;background:var(--grad);width:0;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+<section id="p4"><h1>Under what conditions should Tata expand?</h1><p class="q">25 stores, 12 weeks, Dubai neighbourhoods with many Indian residents.</p>
+<div class="panel"><h3>Edit the scenario <span class="tag t4">All inputs hypothetical</span></h3>
+<div class="g2"><div><label>Units / store / week, weeks 1–4<input type="number" id="u1" min="0" step="0.5"></label><label>Weeks 5–8<input type="number" id="u2" min="0" step="0.5"></label><label>Weeks 9–12 (decision basis)<input type="number" id="u3" min="0" step="0.5"></label><label>Six-week repeat purchase, %<input type="number" id="rp" min="0" max="100"></label></div>
+<div><label>Net receipts per 250 g pack, AED<input type="number" id="nt" min="0" step="0.1"></label><label>Variable cost per pack, AED (landed cost + promotion)<input type="number" id="vc" min="0" step="0.1"></label><label>Fixed pilot cost, AED<input type="number" id="fx" min="0" step="100"></label><label><input type="checkbox" id="rt" style="display:inline"> This is a retest after adjusting</label></div></div>
+<button class="b" onclick="prst()">Reset to baseline</button></div>
+<div class="panel"><div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap"><svg viewBox="0 0 120 120" width="120" height="120" style="flex:none;width:120px" aria-hidden="true"><circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="12"/><circle id="rg" cx="60" cy="60" r="48" fill="none" stroke="#f2b84b" stroke-width="12" stroke-linecap="round" transform="rotate(-90 60 60)" stroke-dasharray="0 302" style="transition:stroke-dasharray .6s,stroke .3s"/><text id="rgt" x="60" y="66" text-anchor="middle" font-size="20" font-weight="700">0</text></svg><div><div class="big" id="vd"></div><p id="vx"></p></div></div><div id="cmp"></div></div>
+<div class="g2"><div class="panel"><h3>Weekly sales ramp (units per store)</h3><div id="wk"></div></div><div class="panel"><h3>Cumulative contribution after fixed cost (AED)</h3><div id="cu"></div></div></div>
+<div class="g2"><div class="panel"><h3>Decision rules</h3><table><tr><th>Verdict</th><th>Condition</th></tr><tr><td><b>Expand</b></td><td>units ≥ 8, repeat ≥ 30% and contribution &gt; 0</td></tr><tr><td><b>Adjust</b></td><td>not Expand and not Stop (units 4 to &lt; 8, repeat 15% to &lt; 30%, or contribution ≤ 0 on first read)</td></tr><tr><td><b>Stop</b></td><td>units &lt; 4, repeat &lt; 15%, or contribution ≤ 0 after a retest</td></tr></table><span class="tag t4">Planning assumptions</span></div>
+<div class="panel"><h3>Scale example</h3><p id="sc"></p></div></div>
+<div class="take">Net receipts are after distributor margin, retailer margin and VAT, so they are not deducted again. The AED 14.50 shelf price is not Tata’s receipt. Landed cost covers freight, duty and labels; fixed cost covers registration and setup.</div></section>
+</main>
 
-/* intro card */
-.intro{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:290px}
-.intro h2{font-family:var(--f-head);font-weight:500;font-size:24px;line-height:1.15;margin:6px 0 6px;color:var(--tx)}
-.intro h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.route{display:flex;align-items:center;gap:8px;font-family:var(--f-num);font-size:12px;color:var(--gold-l);margin:8px 0}
-.route i{flex:1;height:1px;background:var(--grad);position:relative;overflow:hidden}
-.route i::after{content:"";position:absolute;top:-2px;width:18px;height:5px;border-radius:5px;background:var(--gold-l);filter:blur(1px);animation:run 2.6s linear infinite}
-@keyframes run{from{left:-20px}to{left:100%}}
-.globe-wrap{position:relative;min-height:260px}
-.globe-wrap canvas{width:100%;height:100%;display:block;cursor:grab}
-.globe-ctrl{position:absolute;right:0;bottom:0;display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:100%}
-.chip{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 10px;cursor:pointer;color:var(--tx2);font-size:11px;display:inline-flex;align-items:center;gap:5px}
-.chip:hover{color:var(--gold-l);border-color:var(--bronze-d)}
-.chip.on{color:#1b1a18;background:var(--grad);border-color:transparent}
-.chip svg{width:12px;height:12px}
-.ginfo{position:absolute;left:0;top:0;background:rgba(36,36,34,.92);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:11.5px;max-width:220px;display:none}
-.ginfo.on{display:block}
-.ginfo b{color:var(--gold-l)}
-
-/* tables */
-.tw{overflow-x:auto;border-radius:10px;border:1px solid var(--line)}
-table.t{width:100%;border-collapse:collapse;font-size:12px}
-table.t th{position:sticky;top:0;background:#20201e;text-align:left;font-weight:600;color:var(--tx2);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;cursor:default}
-table.t th.sort{cursor:pointer}table.t th.sort:hover{color:var(--gold-l)}
-table.t th .ar{color:var(--gold);margin-left:4px}
-table.t td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-table.t tr:last-child td{border-bottom:0}
-table.t tr:hover td{background:rgba(217,175,121,.035)}
-table.t td.n{font-family:var(--f-num);text-align:right;white-space:nowrap}
-table.t tr.hl td{background:rgba(217,175,121,.07)}
-.mono{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-family:var(--f-head);font-weight:600;color:#1b1a18;background:var(--grad);font-size:13px}
-.mono.alt{background:linear-gradient(135deg,#4a463f,#2f2d29);color:var(--gold-l);border:1px solid var(--line)}
-input.txt,select.sel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 9px;outline:none}
-select.sel{appearance:none;padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,var(--gold) 50%),linear-gradient(135deg,var(--gold) 50%,transparent 50%);background-position:calc(100% - 13px) 50%,calc(100% - 9px) 50%;background-size:4px 4px;background-repeat:no-repeat;cursor:pointer}
-select.sel:focus,input.txt:focus{border-color:var(--bronze)}
-input.rnum{width:44px;background:#1d1d1b;border:1px solid var(--line);border-radius:6px;padding:3px 4px;text-align:center;font-family:var(--f-num)}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:4px;background:linear-gradient(90deg,var(--bronze) var(--p,50%),#34322d var(--p,50%));outline:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gold-l);border:2px solid var(--bronze);box-shadow:0 0 8px rgba(217,175,121,.45)}
-input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--gold-l);border:2px solid var(--bronze)}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.btn{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 11px;cursor:pointer;color:var(--tx2);display:inline-flex;align-items:center;gap:6px}
-.btn:hover{color:var(--gold-l);border-color:var(--bronze-d)}
-.btn.pri{background:var(--grad);color:#1b1a18;border-color:transparent;font-weight:600}
-.btn svg{width:13px;height:13px}
-.sl{margin:8px 0}
-.sl .t{display:flex;justify-content:space-between;font-size:11.5px;color:var(--tx2);margin-bottom:5px}
-.sl .t b{font-family:var(--f-num);color:var(--gold-l)}
-
-/* accordions */
-.acc{border:1px solid var(--line);border-radius:10px;background:var(--card);margin-bottom:8px;overflow:hidden}
-.acc>button{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;padding:11px 14px;cursor:pointer;text-align:left;color:var(--tx)}
-.acc>button .ttl{flex:1;font-weight:600;font-size:13px}
-.acc>button .chev{transition:transform .3s;color:var(--gold)}
-.acc.open>button .chev{transform:rotate(180deg)}
-.acc .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
-.acc.open .body{grid-template-rows:1fr}
-.acc .body>div{overflow:hidden}
-.acc .inner{padding:0 14px 12px;color:var(--tx2)}
-.acc .inner h4{margin:10px 0 4px;color:var(--gold);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
-.acc .inner p,.acc .inner ul{margin:0 0 4px}
-.acc .inner ul{padding-left:18px}
-
-.list button.li{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:9px 2px;cursor:pointer;text-align:left;color:var(--tx)}
-.list button.li:last-child{border-bottom:0}
-.list .dot{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(217,175,121,.1);color:var(--gold);flex:none}
-.list .dot svg{width:14px;height:14px}
-.list b{font-weight:600;font-size:12.5px;display:block}.list span{font-size:11px;color:var(--tx3)}
-.list .go{margin-left:auto;color:var(--tx3)}
-
-.swot{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.sw{cursor:pointer}
-.sw h4{margin:0 0 6px;font-family:var(--f-head);font-weight:500;font-size:18px}
-.sw ul{margin:0;padding-left:18px;color:var(--tx2)}
-.sw.sel{border-color:var(--bronze)}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.persona{display:grid;grid-template-columns:72px 1fr;gap:12px}
-.avatar{width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F2D2A6,#A77C4E 55%,#3b2e22);display:grid;place-items:center;font-family:var(--f-head);font-size:24px;color:#1b1a18}
-.kv{display:grid;grid-template-columns:130px 1fr;gap:4px 10px;font-size:12px}
-.kv dt{color:var(--tx3)}.kv dd{margin:0;color:var(--tx)}
-.gantt{position:relative}
-.flow{width:100%;height:130px}
-.flow .node rect{fill:#2B2A27;stroke:#393630}
-.flow .node text{fill:#F3EFE9;font-size:11px}
-.flow .lnk{stroke:url(#fg);stroke-width:2;fill:none;stroke-dasharray:6 8;animation:dash 1.6s linear infinite}
-@keyframes dash{to{stroke-dashoffset:-28}}
-.cal{display:grid;grid-template-columns:120px repeat(12,minmax(0,1fr));gap:3px;font-size:11px}
-.cal .mh{color:var(--tx3);text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
-.cal .rl{color:var(--tx2);padding:5px 0}
-.cal .cell{height:24px;border-radius:5px;background:#1d1d1b;cursor:pointer;position:relative}
-.cal .cell.on{background:var(--grad)}
-.cal .cell.mid{background:linear-gradient(90deg,#4b3a29,#72563C)}
-.emap .em{cursor:pointer;transition:fill .25s}
-.emap .em:hover{fill:#3a342b}
-.emap .em.sel{fill:url(#gg)}
-.emap text{pointer-events:none;font-size:10px;fill:#F3EFE9}
-
-/* assistant */
-.fab{position:fixed;right:22px;bottom:22px;width:50px;height:50px;border-radius:50%;background:var(--grad);border:0;cursor:pointer;color:#1b1a18;display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 0 6px rgba(217,175,121,.08);z-index:45}
-.fab svg{width:22px;height:22px}
-.asst{position:fixed;right:22px;bottom:84px;width:380px;max-width:calc(100vw - 30px);height:520px;max-height:calc(100vh - 120px);background:var(--card2);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.6);z-index:46;display:none;flex-direction:column}
-.asst.on{display:flex;animation:pg .3s ease}
-.asst header{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
-.asst header b{font-family:var(--f-head);font-weight:500;font-size:15px}
-.asst .msgs{flex:1;overflow:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
-.msg{padding:9px 11px;border-radius:10px;font-size:12.5px;max-width:92%}
-.msg.u{align-self:flex-end;background:rgba(217,175,121,.14);color:var(--gold-l)}
-.msg.a{background:var(--card);border:1px solid var(--line);color:var(--tx)}
-.msg.a .refs{margin-top:6px;font-size:10.5px;color:var(--tx3)}
-.asst .qs{display:flex;flex-wrap:wrap;gap:5px;padding:0 14px 8px}
-.asst form{display:flex;gap:6px;padding:10px 14px;border-top:1px solid var(--line)}
-.asst form input{flex:1}
-
-/* modal */
-.modal{position:fixed;inset:0;background:rgba(10,10,9,.78);z-index:70;display:none;align-items:center;justify-content:center;padding:30px}
-.modal.on{display:flex}
-.modal .box{background:var(--card2);border:1px solid var(--line);border-radius:14px;width:min(1100px,100%);max-height:100%;overflow:auto;padding:16px 18px}
-.modal .box .chart{height:min(70vh,560px)}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--card2);border:1px solid var(--bronze-d);padding:8px 14px;border-radius:10px;z-index:80;opacity:0;transition:opacity .3s;pointer-events:none}
-.toast.on{opacity:1}
-
-body.present .side,body.present .top .search{display:none}
-body.present .main{margin-left:0}
-body.present .page{font-size:14px}
-body.reduce *{animation:none!important;transition:none!important}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-
-@media (max-width:1200px){.c3{grid-column:span 6}.c4{grid-column:span 6}.c5,.c7{grid-column:span 12}.c8{grid-column:span 12}}
-@media (max-width:860px){.c3,.c4,.c6{grid-column:span 12}.intro{grid-template-columns:1fr}.search input{width:140px}.top h1 small{display:none}.swot{grid-template-columns:1fr}.cal{grid-template-columns:90px repeat(12,minmax(0,1fr))}}
-@media (max-width:560px){#cSearch{width:100%}.tag{white-space:normal}.top{padding:8px 12px;gap:6px}.page{padding:14px 12px 60px}.seg.cur{display:none}.search{display:none}}
-@media print{
-  .side,.top,.fab,.asst,.tools,.globe-ctrl,.nav-tip{display:none!important}
-  .main{margin:0!important}
-  body{background:#fff;color:#111}
-  .page{display:block!important;break-before:page;padding:10px}
-  .card{box-shadow:none;border-color:#ccc;background:#fff!important;color:#111;break-inside:avoid}
-  .kpi,.ph h2,.intro h2{color:#111}
-  .grid{gap:8px}
-}
-</style>
-</head>
-<body>
-<a class="sr" href="#pages">Skip to content</a>
-<aside class="side" aria-label="Dashboard navigation">
-  <div class="side-top"><button class="logo" id="sideT" aria-label="Expand or collapse sidebar" aria-expanded="false" style="border:0;cursor:pointer">A</button><div class="brand-t"><b>Global Market Explorer</b><span>Amul × UAE</span></div></div>
-  <nav class="nav" id="nav"></nav>
-  <div class="side-bot nav"><button id="bSet" aria-label="Settings"><i data-lucide="settings"></i><span>Settings</span></button><button id="bFull2" aria-label="Fullscreen"><i data-lucide="maximize"></i><span>Fullscreen</span></button></div>
-</aside>
-<div class="nav-tip" id="navTip"></div>
-<div class="main">
-  <header class="top">
-    <h1 id="ttl">Executive Overview</h1><div class="sp"></div>
-    <div class="search"><i data-lucide="search"></i><input id="gs" type="search" placeholder="Search dashboard…" aria-label="Search the dashboard"><div class="sres" id="sres"></div></div>
-    <div class="seg cur" id="curSeg" role="group" aria-label="Currency"><button data-cur="AED">AED</button><button data-cur="INR">INR</button></div>
-    <button class="ib" id="bPres" title="Presentation mode" aria-label="Presentation mode"><i data-lucide="presentation"></i></button>
-    <button class="ib" id="bPrint" title="Print all sections" aria-label="Print"><i data-lucide="printer"></i></button>
-    <button class="ib" id="bFull" title="Fullscreen" aria-label="Fullscreen"><i data-lucide="maximize"></i></button>
-  </header>
-  <main id="pages"></main>
-</div>
-<div class="modal" id="modal"><div class="box" id="modalBody" role="dialog" aria-modal="true"></div></div>
-<div class="toast" id="toast" role="status"></div>
 <script>
-/* ============ CENTRAL DATASET ============
-   Status codes: V = verified statistic, H = historical data, F = published forecast/projection,
-   E = analytical estimate (author), S = illustrative scenario, R = strategic recommendation */
-const SRC = {
-  fcsc24:{org:'FCSC via Gulf News',title:'UAE population hits 11.3 million in 2024',date:'2025',url:'https://gulfnews.com/uae/government/uae-population-hits-113-million-in-2024-1.500261527',metric:'Population 2024; Dubai population Sep 2025',year:'2024–25',lim:'News report of FCSC register data.'},
-  fcsc25:{org:'FCSC via Gulf News',title:'UAE population crosses 12 million',date:'2026',url:'https://gulfnews.com/uae/uae-population-crosses-12-million-how-many-are-men-and-how-many-women-1.500748187',metric:'Population 2025; gender split',year:'2025',lim:'News report of FCSC register data.'},
-  glmm:{org:'GLMM / FCSC',title:'UAE: Total population residing in the UAE, by sex (2000–2023)',date:'2024',url:'https://gulfmigration.grc.net/?p=10258',metric:'Population 2021–2023',year:'2021–23',lim:'2023 marked preliminary.'},
-  imf25:{org:'International Monetary Fund',title:'United Arab Emirates: 2025 Article IV Consultation',date:'Dec 2025',url:'https://www.imf.org/-/media/files/publications/cr/2025/english/1areea2025001-source-pdf.pdf',metric:'GDP per capita 2024; growth 2024–26',year:'2024–26',lim:'2025–26 are projections.'},
-  imf24:{org:'International Monetary Fund',title:'United Arab Emirates: 2024 Article IV Consultation',date:'Dec 2024',url:'https://imf.org/-/media/Files/Publications/CR/2024/English/1areea2024001-print-pdf.ashx',metric:'Real GDP growth 2023 (3.6%)',year:'2023',lim:'—'},
-  gdp24:{org:'FCSC via Gulf News',title:'UAE GDP hits Dh1.776 trillion in 2024',date:'Jun 2025',url:'https://gulfnews.com/business/banking/uae-gdp-hits-dh1776-trillion-in-2024-driven-by-5-growth-in-non-oil-sectors-1.500164247',metric:'Real GDP 2024; non-oil share',year:'2024',lim:'Real (constant-price) GDP.'},
-  gdp25:{org:'FCSC via WAM',title:'UAE GDP reaches AED1.9 trillion, grows 6.2% in 2025',date:'30 May 2026',url:'https://www.wam.ae/en/article/178wkk1-uae-gdp-reaches-aed19-trillion-grows-62-2025',metric:'Real GDP 2025; growth 6.2%',year:'2025',lim:'Real (constant-price) GDP; preliminary.'},
-  infl:{org:'World Bank via FRED',title:'Inflation, consumer prices for the UAE (FPCPITOTLZGARE)',date:'Jul 2025',url:'https://fred.stlouisfed.org/series/FPCPITOTLZGARE',metric:'CPI inflation 2020–2024',year:'2020–24',lim:'Annual averages.'},
-  amb:{org:'Indian Ambassador via Gulf News',title:'Indian expat population in UAE doubles to 4.36 million',date:'2024',url:'https://gulfnews.com/world/asia/india/indian-expat-population-in-uae-doubles-to-436-million-more-than-half-live-in-dubai-envoys-1.500129223',metric:'Indian community; >half in Dubai',year:'2024',lim:'Official estimate, not a census; different date from FCSC totals.'},
-  mea:{org:'Ministry of External Affairs, India',title:'India–UAE Bilateral Relations brief',date:'2026',url:'https://meacms.mea.gov.in/Portal/ForeignRelation/India-UAE_2026.pdf',metric:'4.3 million Indians; diaspora profile',year:'2026',lim:'—'},
-  mofa:{org:'UAE Ministry of Foreign Affairs',title:'Economic cooperation: UAE–India',date:'n.d.',url:'https://www.mofa.gov.ae/en/missions/kerala/uae-relationships/economic-cooperation',metric:'Bilateral trade FY2021-22 & FY2024-25',year:'FY22, FY25',lim:'—'},
-  angel:{org:'Angel One (Commerce Ministry data)',title:'India-UAE trade reached USD 83.7 billion in FY24',date:'Feb 2025',url:'https://www.angelone.in/news/economy/india-uae-trade-reached-over-usd-83-billion-in-fy24-after-signing-of-cepa',metric:'Trade FY2020-21 & FY2023-24',year:'FY21, FY24',lim:'Secondary report of ministry data.'},
-  nonoil:{org:'UAE Ministry of Foreign Trade via Gulf News',title:'Non-oil trade between UAE and India hits $65 billion in 2024',date:'2025',url:'https://gulfnews.com/business/economy/uae-minister-of-foreign-trade-al-zeyoudi-meets-indian-business-council-to-boost-cepa-gains-1.500256798',metric:'Non-oil trade 2024',year:'2024',lim:'—'},
-  cepa:{org:'Government of India, Noida SEZ',title:'FAQs on India–UAE CEPA',date:'n.d.',url:'https://www.nsez.gov.in/Resources/Trade/FAQs%20on%20CEPA.pdf',metric:'97% tariff lines; 80.3% immediate; 5% standard duty',year:'2022',lim:'Chocolate (HS 1806) staging not confirmed.'},
-  drep:{org:'DataReportal',title:'Digital 2026: The United Arab Emirates',date:'2026',url:'https://datareportal.com/reports/digital-2026-united-arab-emirates',metric:'Internet penetration 99%',year:'End-2025',lim:'—'},
-  ecom:{org:'EZDubai via WAM',title:'UAE e-commerce market reaches AED32.3 billion in 2024',date:'2025',url:'https://www.wam.ae/en/article/bjsbc4q-uae-e-commerce-market-reaches-aed323-billion-2024',metric:'E-commerce market size',year:'2024',lim:'Industry estimate.'},
-  emr:{org:'Expert Market Research',title:'UAE Chocolate Market Report and Forecast 2025–2034',date:'2025',url:'https://www.marketresearch.com/Expert-Market-Research-v4220/UAE-Chocolate-Forecast-41224969',metric:'Chocolate market 2024 & 2034; 5.2% CAGR',year:'2024–34',lim:'Paid report; summary figures only. Estimates differ widely between firms.'},
-  mordor:{org:'Mordor Intelligence',title:'UAE Chocolate Market Analysis',date:'2026',url:'https://www.mordorintelligence.com/industry-reports/united-arab-emirates-chocolate-market',metric:'Mass share 77.1%; premium CAGR 6.65%; channel share; Ramadan/Eid gifting share',year:'2024–31',lim:'Its headline market size contains a unit error; gifting share is Saudi + UAE combined.'},
-  euro:{org:'Euromonitor via The National',title:'UAE chocolatiers brace for heavy demand over Ramadan and Eid',date:'2017',url:'https://www.thenationalnews.com/business/uae-chocolatiers-brace-for-heavy-demand-over-ramadan-and-eid-1.324919',metric:'Chocolate confectionery US$292.4m (2017)',year:'2017',lim:'Different definition from EMR; not comparable.'},
-  ken:{org:'Ken Research',title:'UAE Premium Chocolate Retail Market 2025–2030',date:'2025',url:'https://www.marketresearch.com/Ken-Research-v3771/UAE-Premium-Chocolate-Retail-Size-42971242',metric:'Dark chocolate leads premium retail sub-segments',year:'2025',lim:'Qualitative; no UAE dark-chocolate size published.'},
-  gtoday:{org:'Gulf Today',title:"UAE's chocolate industry adapts to global cocoa crisis",date:'16 Jul 2025',url:'https://www.gulftoday.ae/business/2025/07/16/uaes-chocolate-industry-adapts-to-global-cocoa-crisis-with-local-innovation-and-steady-demand',metric:'Festive demand (Eid, Diwali); cocoa crisis',year:'2025',lim:'—'},
-  crfL:{org:'Carrefour UAE',title:'Tablet chocolates – Lindt Excellence range',date:'Nov 2026',url:'https://www.carrefouruae.com/mafuae/en/c/03166',metric:'Lindt 70% AED 23.49 /100 g',year:'2026',lim:'Shelf price changes with promotions.'},
-  crfL85:{org:'Carrefour UAE',title:'Lindt Excellence 85% Cocoa Dark Chocolate, 100g',date:'Nov 2026',url:'https://www.carrefouruae.com/mafuae/en/tablet-chocolates/lindt-excellence-dark-85-100g/p/646757',metric:'Lindt 85% AED 23.99 regular',year:'2026',lim:'Promo price AED 15.00 seen.'},
-  spL:{org:'Spinneys UAE',title:'Lindt Excellence 70% Mild Dark Chocolate 100g',date:'Nov 2026',url:'https://spinneys.com/en-ae/catalogue/lindt-excellence-mild-drk-choc-70-100g_15604',metric:'AED 20.75',year:'2026',lim:'—'},
-  spB:{org:'Spinneys UAE',title:'Cadbury Bournville dark chocolate 100g',date:'Nov 2026',url:'https://www.spinneys.com/en-ae/catalogue/cadbury-bournville-dark-chocolate-100g_49568/',metric:'AED 14.75; ingredients',year:'2026',lim:'Cocoa % not stated on listing.'},
-  talG:{org:'talabat mart UAE',title:'Chocolate listing – Galaxy Dark 40 g',date:'Nov 2026',url:'https://www.talabat.com/uae/grocery/673755/knowledge-village/sweet-snacks/chocolate?aid=1270',metric:'AED 3.95',year:'2026',lim:'Cocoa % not stated.'},
-  crfG:{org:'Carrefour UAE',title:'Galaxy Smooth Dark Chocolate Bar, 40g Pack of 5',date:'Nov 2026',url:'https://www.carrefouruae.com/mafuae/en/snacking-chocolates/galaxy-dark-multipack-40gx5/p/1269938',metric:'AED 16.79',year:'2026',lim:'—'},
-  crf72:{org:'Carrefour UAE',title:'Carrefour Selection 72% Cacao Dark Chocolate 200g',date:'Nov 2026',url:'https://www.carrefouruae.com/mafuae/en/minis-miniatures/crf-s-chocolate-dark-mini-72-198g/p/543739',metric:'AED 13.79',year:'2026',lim:'—'},
-  amulP:{org:'Amul (GCMMF)',title:'Amul Dark Chocolate – product page',date:'n.d.',url:'https://amul.com/products/amul-dark-chocolate-info.php',metric:'55% cocoa; packs; storage 15–20°C; 12-month shelf life',year:'—',lim:'—'},
-  amulX:{org:'Amul (GCMMF)',title:'Exports abroad: UAE',date:'n.d.',url:'https://amul.com/m/exports-usa?s=uae',metric:'Chocolates listed as available in UAE via 3 importers',year:'—',lim:'Does not list dark chocolate SKUs or retailers.'},
-  desert:{org:'Desertcart UAE',title:'Amul Dark Chocolate 150 gram',date:'Nov 2026',url:'https://www.desertcart.ae/products/231560557-amul-dark-chocolate-150-gram',metric:'Cross-border availability (no price shown)',year:'2026',lim:'Cross-border reseller, not mainstream retail.'},
-  bb:{org:'BigBasket India',title:'Amul Dark Chocolate, 2 x 150 g',date:'Nov 2026',url:'https://bigbasket.com/pd/1229961/amul-dark-chocolate-2-x-150-g',metric:'India MRP ₹400 per 2 × 150 g',year:'2026',lim:'—'},
-  gcmmf:{org:'Indian Cooperative',title:'Amul reports 11% revenue growth in FY 2024-25',date:'Apr 2025',url:'https://www.indiancooperative.com/co-op-news-snippets/amul-reports-11-revenue-growth-in-fy-2024-25/',metric:'GCMMF turnover ₹65,911 crore',year:'FY25',lim:'—'},
-  lakh:{org:'Asianet Newsable (ANI)',title:"Amul's brand turnover crosses Rs 1 lakh crore",date:'Apr 2026',url:'https://newsable.asianetnews.com/business/amuls-brand-turnover-crosses-historic-rs-1-lakh-crore-milestone-articleshow-qtu183s',metric:'GCMMF ₹73,450 crore FY26; 36 lakh farmers',year:'FY26',lim:'—'},
-  dm:{org:'Dubai Municipality',title:'Item registration & label assessment user guide',date:'Dec 2023',url:'https://www.dm.gov.ae/wp-content/uploads/2023/12/IRS-eng.pdf',metric:'Registration + label assessment ≈5 working days',year:'2023',lim:'—'},
-  ita:{org:'U.S. International Trade Administration',title:'UAE labeling/marking requirements',date:'n.d.',url:'https://www.trade.gov/knowledge-product/united-arab-emirates-labelingmarking-requirements',metric:'Arabic or Arabic/English labels; halal certifiers',year:'—',lim:'—'},
-  zad:{org:'UAE Government portal',title:'Food safety (ZAD registration)',date:'n.d.',url:'https://u.ae/en/information-and-services/health-and-fitness/food-safety-and-health-tips',metric:'Food must be registered in ZAD',year:'—',lim:'—'},
-  vat:{org:'UAE Ministry of Finance',title:'Value Added Tax (VAT)',date:'n.d.',url:'https://mof.gov.ae/en/public-finance/tax/vat/',metric:'VAT 5%',year:'2018–',lim:'—'},
-  heat:{org:'The National (NCM data)',title:'UAE weather: temperatures to hit 48°C this week',date:'11 Aug 2025',url:'https://www.thenationalnews.com/news/uae/2025/08/11/uae-temperature-summer-weather/',metric:'Record 51.8°C (Aug 2025); mid-40s °C in cities',year:'2025',lim:'—'},
-  fx:{org:'Trustnet',title:'Historical rate of INR vs one AED',date:'11 Nov 2026',url:'https://www2.trustnet.com/Currencies/CurrencyHistory.aspx?SourceT=AEDINR',metric:'₹25.5485 per AED',year:'2026',lim:'Rates move daily.'},
-  comtrade:{org:'UN Comtrade',title:'UN Comtrade database (HS 1806)',date:'—',url:'https://comtradeplus.un.org/',metric:'Chocolate import data (not extracted)',year:'—',lim:'Not queried for this project: import KPIs are shown as unavailable.'}
-};
-
-const FX = {rate:25.5485, date:'11 Nov 2026', src:'fx'};
-
-const KPI = {
-  pop:{label:'UAE population',v:12060000,unit:'people',year:'2025',st:'V',src:'fcsc25',tip:'FCSC population register, +7% vs 2024.',series:[[2021,9861007],[2022,10288946],[2023,10678556],[2024,11294243],[2025,12060000]],seriesSrc:'glmm'},
-  gdp:{label:'Real GDP',v:1.9,unit:'AED trillion',year:'2025',st:'V',src:'gdp25',tip:'Constant-price GDP; AED 1.776 tn in 2024 (+4%), AED 1.9 tn in 2025 (+6.2%).',series:[[2024,1.776],[2025,1.9]]},
-  gdppc:{label:'GDP per capita',v:50220,unit:'US$',year:'2024',st:'V',src:'imf25',tip:'IMF Article IV 2025 selected indicators.'},
-  growth:{label:'Real GDP growth',v:6.2,unit:'%',year:'2025',st:'V',src:'gdp25',tip:'FCSC actual for 2025. IMF had projected 4.8% (2025) and 5.0% (2026).',series:[[2023,3.6],[2024,4.0],[2025,6.2]]},
-  infl:{label:'CPI inflation',v:1.66,unit:'%',year:'2024',st:'H',src:'infl',tip:'World Bank series; 5.29% in 2022.',series:[[2020,-2.08],[2021,0.18],[2022,5.29],[2023,1.63],[2024,1.66]]},
-  indians:{label:'Indian community',v:4360000,unit:'people',year:'2024',st:'V',src:'amb',tip:'Indian Ambassador; over half live in Dubai. MEA (2026) gives 4.3 million.'},
-  choc:{label:'Chocolate market',v:736.4,unit:'US$ million',year:'2024',st:'F',src:'emr',tip:'Expert Market Research estimate; other firms publish very different sizes.'},
-  chocg:{label:'Chocolate market CAGR',v:5.2,unit:'% p.a.',year:'2025–34',st:'F',src:'emr',tip:'Published forecast, not a measured growth rate.'},
-  imports:{label:'Chocolate imports',v:null,unit:'',year:'—',st:'NA',src:'comtrade',tip:'UN Comtrade data for HS 1806 were not extracted for this project, so no figure is shown.'},
-  trade:{label:'India–UAE trade',v:100.06,unit:'US$ billion',year:'FY2024-25',st:'V',src:'mofa',tip:'+19.6% year on year.',series:[[2021,43.3],[2022,72.87],[2024,83.7],[2025,100.06]]},
-  internet:{label:'Internet penetration',v:99.0,unit:'%',year:'End-2025',st:'V',src:'drep',tip:'DataReportal Digital 2026.'},
-  ecom:{label:'E-commerce market',v:32.3,unit:'AED billion',year:'2024',st:'V',src:'ecom',tip:'EZDubai estimate.'},
-  dubai:{label:'Dubai population',v:4006656,unit:'people',year:'Sep 2025',st:'V',src:'fcsc24',tip:'Dubai Statistics Centre population clock.'}
-};
-
-/* Market growth series for the year-range chart */
-const SERIES = {
-  pop:{name:'UAE population (million)',unit:'million',st:'Historical (FCSC)',src:['glmm','fcsc24','fcsc25'],pts:[[2021,9.86],[2022,10.29],[2023,10.68],[2024,11.29],[2025,12.06]]},
-  trade:{name:'India–UAE bilateral trade (US$ bn, fiscal year ending)',unit:'US$ bn',st:'Historical',src:['angel','mofa'],pts:[[2021,43.3],[2022,72.87],[2024,83.7],[2025,100.06]]},
-  choc:{name:'UAE chocolate market (US$ m)',unit:'US$ m',st:'2024 estimate + path derived from EMR 5.2% CAGR to 2034 (forecast)',src:['emr'],pts:(function(){const a=[];for(let y=2024;y<=2034;y++){a.push([y,+(736.4*Math.pow(1222.56/736.4,(y-2024)/10)).toFixed(1)])}return a})()},
-  gdp:{name:'Real GDP growth (%)',unit:'%',st:'2023–25 actual; 2026 IMF projection',src:['imf24','gdp24','gdp25','imf25'],pts:[[2023,3.6],[2024,4.0],[2025,6.2],[2026,5.0]]}
-};
-
-const MARKET = {
-  sizes:[{y:'2017',v:292.4,src:'euro',note:'Euromonitor (different definition)'},{y:'2024',v:736.4,src:'emr',note:'Expert Market Research estimate'},{y:'2034F',v:1222.56,src:'emr',note:'EMR forecast'}],
-  priceTier:[{n:'Mass',v:77.1},{n:'Premium',v:22.9}],
-  channel:{supers:35.55},
-  seasons:[
-    {n:'Ramadan & Eid al-Fitr',m:[1,2],peak:[2],why:'Gifting peak; Ramadan + Eid = 45–53% of annual chocolate gifting (Saudi + UAE, 2024).',src:'mordor'},
-    {n:'Eid al-Adha',m:[4],peak:[4],why:'Second Eid gifting window.',src:'mordor'},
-    {n:'Summer heat (logistics risk)',m:[5,6,7,8],peak:[6,7],why:'Mid-40s °C in cities: cold chain essential, lower impulse demand outdoors.',src:'heat'},
-    {n:'Diwali',m:[9,10],peak:[9],why:'Key festive peak for the Indian diaspora.',src:'gtoday'},
-    {n:'UAE National Day & year-end',m:[11],peak:[11],why:'Celebration gifting, year-end promotions.',src:'gtoday'},
-    {n:'Back-to-school / everyday',m:[8,9],peak:[],why:'Family routine purchases; value packs.',src:null}
-  ],
-  seasonNote:'Islamic festival months move about 11 days earlier each year; months shown are for 2027 and approximate.'
-};
-
-const COMP = [
-  {id:'l70',brand:'Lindt',variant:'Excellence 70%',cocoa:70,g:100,aed:23.49,tier:'Luxury',pos:'Swiss master-chocolatier luxury',dist:'Carrefour, Spinneys, LuLu, online',adv:'Prestige, wide cocoa ladder',src:'crfL',date:'Nov 2026',status:'V',q:4.7},
-  {id:'l85',brand:'Lindt',variant:'Excellence 85%',cocoa:85,g:100,aed:23.99,tier:'Luxury',pos:'Intense luxury dark',dist:'Carrefour, online',adv:'Brand authority with enthusiasts',src:'crfL85',date:'Nov 2026',status:'V',q:4.8},
-  {id:'l70m',brand:'Lindt',variant:'Excellence 70% Mild',cocoa:70,g:100,aed:20.75,tier:'Luxury',pos:'Smoother premium dark',dist:'Spinneys',adv:'Premium supermarket presence',src:'spL',date:'Nov 2026',status:'V',q:4.5},
-  {id:'bv',brand:'Cadbury',variant:'Bournville dark',cocoa:null,g:100,aed:14.75,tier:'Mainstream',pos:'Familiar classic dark',dist:'Spinneys, supermarkets',adv:'Familiarity (lists palm oil and milk powder)',src:'spB',date:'Nov 2026',status:'V',q:3.2},
-  {id:'gx',brand:'Galaxy',variant:'Smooth Dark 40 g',cocoa:null,g:40,aed:3.95,tier:'Mass',pos:'Smooth everyday indulgence',dist:'Everywhere incl. quick-commerce',adv:'Ubiquitous distribution',src:'talG',date:'Nov 2026',status:'V',q:2.8},
-  {id:'gx5',brand:'Galaxy',variant:'Smooth Dark 5 × 40 g',cocoa:null,g:200,aed:16.79,tier:'Mass',pos:'Multipack value',dist:'Carrefour',adv:'Low price per gram',src:'crfG',date:'Nov 2026',status:'V',q:2.8},
-  {id:'c72',brand:'Carrefour Selection',variant:'72% Cacao Dark',cocoa:72,g:200,aed:13.79,tier:'Private label',pos:'Private-label value',dist:'Carrefour only',adv:'Lowest price per gram, high cocoa',src:'crf72',date:'Nov 2026',status:'V',q:3.0},
-  {id:'amul',brand:'Amul',variant:'Dark Chocolate 55% (proposed)',cocoa:55,g:150,aed:14.95,tier:'Affordable premium',pos:'Affordable premium, pure cocoa butter',dist:'Proposed: LuLu, Carrefour, Indian grocers, online',adv:'No vegetable fat or milk solids; trusted Indian brand',src:'amulP',date:'Proposal',status:'P',q:3.6}
-];
-COMP.forEach(c=>c.per100=+(c.aed/c.g*100+1e-9).toFixed(2));
-
-const CRIT = [
-  {k:'size',n:'Market size',w:20,why:'Drives long-term volume.'},
-  {k:'power',n:'Purchasing power',w:15,why:'Ability to pay a premium.'},
-  {k:'growth',n:'Growth potential',w:20,why:'Future volume and relevance.'},
-  {k:'access',n:'Accessibility',w:15,why:'Cost to reach through channels and media.'},
-  {k:'fit',n:'Brand & product fit',w:20,why:'How well Amul’s image and the 55% bar match needs.'},
-  {k:'comp',n:'Competitive attractiveness',w:10,why:'How contested the segment is.'}
-];
-const SEGS = [
-  {id:'S1',n:'Urban premium consumers',r:{size:3,power:5,growth:4,access:3,fit:2,comp:2},
-    geo:'Dubai Marina, Downtown, Abu Dhabi Corniche',demo:'Ages 25–45, mixed nationalities, high income, professionals',psy:'Indulgence, brand-led, cosmopolitan',beh:'Buys premium tablets weekly; loyal to European brands',
-    persona:{name:'Daniel',age:'30–40',income:'High',loc:'Dubai Marina',life:'Gym, brunches, travels often',buy:'Spinneys, Waitrose, online; buys Lindt weekly',mot:'Taste, brand image',ch:'Premium supermarkets, Amazon.ae',fit:'Low–medium: Amul unknown to him'}},
-  {id:'S2',n:'Indian expatriate consumers',r:{size:5,power:3,growth:4,access:5,fit:5,comp:4},
-    geo:'Dubai (over half of Indians), Sharjah, Abu Dhabi',demo:'~4.3 million; families and professionals; middle to upper-middle income',psy:'Value-conscious, brand-loyal to Indian FMCG, vegetarian preference',beh:'Weekly hypermarket shop; festive bulk buys (Diwali, Eid open houses)',
-    persona:{name:'Priya Nair',age:'32–40',income:'Upper-middle (illustrative household AED 20–35k/month)',loc:'Al Barsha, Dubai / Al Nahda, Sharjah',life:'Works in IT/finance; yoga; celebrates Diwali, attends Eid open houses',buy:'Weekly LuLu or Carrefour shop; chocolate 2–3 times a month; compares price per gram',mot:'Trust in Amul, vegetarian assurance, less milk-heavy treat',ch:'LuLu, Carrefour, Indian grocers, talabat mart',fit:'High: knows Amul; price fits'}},
-  {id:'S3',n:'Health-conscious dark chocolate buyers',r:{size:3,power:4,growth:5,access:4,fit:4,comp:3},
-    geo:'Across Dubai and Abu Dhabi',demo:'Ages 25–50, all nationalities, middle-high income',psy:'Wellness-minded, reads labels, prefers "clean" ingredients',beh:'Buys high-cocoa bars; checks sugar and fat',
-    persona:{name:'Sara',age:'28–38',income:'Middle–high',loc:'JLT, Dubai',life:'Runner, meal-preps, health apps',buy:'Health aisles, online; prefers 70%+ bars',mot:'Cocoa butter only, less sugar',ch:'Supermarkets, Amazon.ae, noon',fit:'Medium–high with 75%/90% variants'}},
-  {id:'S4',n:'Luxury chocolate & gifting consumers',r:{size:3,power:5,growth:3,access:2,fit:1,comp:1},
-    geo:'Dubai Mall, Yas Mall, Abu Dhabi',demo:'Emirati and high-income residents; corporate buyers',psy:'Prestige, presentation, status',beh:'Boutique trays at Ramadan/Eid; corporate orders',
-    persona:{name:'Khalid',age:'35–55',income:'Very high',loc:'Abu Dhabi',life:'Family-centred, hosts majlis gatherings',buy:'Boutique chocolatiers; seasonal gift trays',mot:'Prestige, packaging',ch:'Boutiques, mall flagship stores',fit:'Low: value image clashes with luxury gifting'}},
-  {id:'S5',n:'Price-sensitive mass consumers',r:{size:5,power:2,growth:2,access:4,fit:3,comp:2},
-    geo:'Sharjah, Ajman, industrial areas',demo:'Lower-income workers; South Asian and Arab expatriates',psy:'Price-first, small-pack buyers',beh:'Impulse purchases in groceries (baqalas)',
-    persona:{name:'Ravi',age:'22–40',income:'Low',loc:'Al Qusais / Sharjah industrial area',life:'Shared housing, remits money home',buy:'Neighbourhood grocery; single bars',mot:'Lowest price, familiar brand',ch:'Baqalas, small groceries',fit:'Medium: needs smaller packs'}}
-];
-
-const PESTLE = [
-  {k:'P',n:'Political',type:'O',impact:3,unc:1,find:'Stable federal government; India–UAE strategic partnership; CEPA in force since May 2022; bilateral investment treaty (2024).',ev:'UAE eliminates duties on 97% of tariff lines covering 99% of Indian exports by value.',src:'cepa',imp:'Low political risk and government support for Indian exporters.',rec:'Use CEPA certificate of origin; check HS 1806 staging.'},
-  {k:'E',n:'Economic',type:'B',impact:4,unc:3,find:'Real GDP +6.2% (2025); GDP per capita US$50,220 (2024); CPI inflation 1.66% (2024); AED pegged to US$; high cocoa prices.',ev:'FCSC 2025 GDP; IMF Article IV; World Bank CPI.',src:'gdp25',imp:'Strong spending power; cocoa costs squeeze margins.',rec:'Affordable-premium price with pack-size flexibility.'},
-  {k:'S',n:'Social',type:'O',impact:5,unc:2,find:'Expatriate majority; ~4.36 million Indians; strong gifting culture (Ramadan, Eid, Diwali); rising health awareness.',ev:'Indian Ambassador (2024); Mordor gifting data.',src:'amb',imp:'Ready diaspora base; health trend favours dark chocolate.',rec:'Diaspora-first launch, festive packs, culturally reviewed ads.'},
-  {k:'T',n:'Technological',type:'O',impact:3,unc:2,find:'99% internet penetration; e-commerce AED 32.3 bn (2024); fast quick-commerce growth.',ev:'DataReportal 2026; EZDubai.',src:'drep',imp:'Low-cost digital launch and online festive gifting.',rec:'Launch on Amazon.ae, noon, talabat mart alongside stores.'},
-  {k:'L',n:'Legal',type:'T',impact:4,unc:3,find:'ZAD / Dubai Municipality registration; Arabic or Arabic–English labels; halal certificate where halal is claimed; 5% VAT; 5% duty unless CEPA applies.',ev:'Dubai Municipality guide; ITA labelling guide; UAE MoF.',src:'dm',imp:'Compliance cost and lead time before listing.',rec:'Pre-clear labels through the importer; document E476 and flavour sources.'},
-  {k:'En',n:'Environmental',type:'T',impact:5,unc:2,find:'Summer highs in the mid-40s °C; 51.8°C record (Aug 2025); Amul storage spec 15–20°C.',ev:'NCM via The National; Amul product page.',src:'heat',imp:'Melting and fat bloom risk; cold chain needed.',rec:'Reefer shipping, cool storage, insulated cartons, summer cold vans.'}
-];
-
-const PORTER = [
-  {k:'rivalry',n:'Competitive rivalry',lvl:'High',score:4,ev:'Lindt, Mars (Galaxy), Mondelez (Cadbury), private labels and local "Dubai chocolate" brands; Lindt seen at up to 44% off at Carrefour.',imp:'Win on value per gram and a clear ingredient story, not heavy advertising.',src:'crfL'},
-  {k:'entry',n:'Threat of new entrants',lvl:'Medium',score:3,ev:'CEPA lowers tariffs, but listing fees, cold chain and registration remain barriers.',imp:'Amul’s existing importer network is an advantage over newcomers.',src:'cepa'},
-  {k:'supplier',n:'Supplier power',lvl:'Medium–High',score:3.5,ev:'Global cocoa price crisis (2024–25) raises input costs.',imp:'Forward-buy cocoa; manage pack sizes.',src:'gtoday'},
-  {k:'buyer',n:'Buyer power',lvl:'High',score:4,ev:'Hypermarkets (35.55% of chocolate sales via supermarkets/hypermarkets) set terms; shoppers compare promotions.',imp:'Negotiate joint promotions; build direct online demand.',src:'mordor'},
-  {k:'subs',n:'Threat of substitutes',lvl:'High',score:4,ev:'Dates, kunafa-filled "Dubai chocolate", other sweet snacks.',imp:'Position as an everyday better-for-you treat.',src:'crfL'}
-];
-
-const SWOT = {
-  S:{n:'Strengths',items:['Cocoa-butter-only recipe: no milk solids or vegetable fat','Cooperative cost base allows lower prices','High trust among ~4.3 million Indian residents','Existing UAE importer network','Cocoa ladder from 55% to 99%'],ev:'Amul product page; Amul UAE exports page; Indian Ambassador.',imp:'Credible affordable-premium proposition.',rec:'Lead communication with the ingredient story.',src:'amulP'},
-  W:{n:'Weaknesses',items:['55% cocoa below the 70%+ benchmark','Brand seen as dairy, not chocolate','Little visible shelf presence in major UAE chains','Packaging less premium than Lindt'],ev:'No Amul dark listing found on Carrefour UAE; Desertcart only cross-border.',imp:'Awareness outside the diaspora is low.',rec:'Push 75%/90% to enthusiasts; refresh pack design.',src:'desert'},
-  O:{n:'Opportunities',items:['CEPA tariff preference (subject to tariff line)','Health-driven dark chocolate demand','Diwali, Ramadan and Eid gifting','Quick-commerce and online gifting'],ev:'CEPA FAQ; Ken Research; Mordor.',imp:'Multiple festive peaks each year.',rec:'Festive gift packs and online bundles.',src:'cepa'},
-  T:{n:'Threats',items:['Extreme heat damages product','Deep promotions by Lindt and Mars','Cocoa price volatility','Labelling or halal compliance delays'],ev:'NCM heat data; Carrefour promotions; Gulf Today.',imp:'Margin and quality risks.',rec:'Cold chain, compliance pre-checks, value pricing.',src:'heat'}
-};
-const TOWS = {
-  SO:['Use Amul trust + diaspora concentration to lead Diwali and Eid gift packs.','Pair the cocoa-butter-only claim with the health trend online.'],
-  WO:['Use online channels to build awareness beyond the diaspora at low cost.','Introduce 75%/90% bars for health-conscious buyers.'],
-  ST:['Use the cooperative cost base to stay below Bournville per gram despite promotions.','Use the importer network for pre-cleared labels.'],
-  WT:['Invest in insulated packs and reefer logistics before summer.','Avoid head-to-head luxury competition with Lindt.']
-};
-
-const ENTRY = [
-  {n:'Indirect exporting',inv:1,risk:1,ctrl:1,acc:2,scale:2,fit:'Current situation; too passive for growth.'},
-  {n:'Direct exporting (lead distributor)',inv:2,risk:2,ctrl:4,acc:4,scale:4,fit:'Recommended: control of brand and price with low investment.',rec:true},
-  {n:'Licensing',inv:1,risk:4,ctrl:1,acc:3,scale:3,fit:'Quality and brand risk; unsuitable.'},
-  {n:'Joint venture',inv:4,risk:3,ctrl:3,acc:4,scale:3,fit:'Premature at current volumes.'},
-  {n:'Wholly owned subsidiary',inv:5,risk:4,ctrl:5,acc:4,scale:5,fit:'Long-term option after scale is proven.'}
-];
-
-const RISKS = [
-  {id:1,n:'Food regulations & registration',cat:'Regulatory',p:2,i:4,mit:'Pre-approve Arabic labels and ZAD registration through the importer; halal certificate from a UAE-accepted body.'},
-  {id:2,n:'Consumer acceptance of 55% cocoa',cat:'Consumer',p:3,i:4,mit:'In-store sampling; lead with 75%/90% for enthusiasts.'},
-  {id:3,n:'Competition (Lindt, Mars, private label)',cat:'Competitive',p:4,i:3,mit:'Value per gram, festive bundles, diaspora focus.'},
-  {id:4,n:'Cocoa price volatility',cat:'Economic',p:4,i:3,mit:'Forward buying; pack-size management.'},
-  {id:5,n:'Exchange rate (INR–AED)',cat:'Financial',p:2,i:2,mit:'Invoice in AED or USD; rupee weakness raises INR proceeds.'},
-  {id:6,n:'Supply chain disruptions',cat:'Supply chain',p:3,i:3,mit:'Two months of buffer stock in UAE warehouse.'},
-  {id:7,n:'Temperature-related damage',cat:'Supply chain',p:4,i:4,mit:'Reefer containers, 15–20°C storage, insulated cartons, cold vans in summer.'},
-  {id:8,n:'Pricing pressure from retailers',cat:'Commercial',p:3,i:3,mit:'Price headroom of ~AED 2.5/bar for promotions and listing fees.'},
-  {id:9,n:'Distribution reach',cat:'Commercial',p:3,i:3,mit:'Lead distributor with hypermarket and quick-commerce access; phased roll-out.'}
-];
-
-const ROADMAP = [
-  {n:'Research & compliance',s:0,e:3,col:'#72563C',kpi:'Product registered; labels approved',del:'Distributor tender, ZAD registration, Arabic labels, halal certificate',dep:'—'},
-  {n:'Pilot launch (Dubai & Sharjah)',s:2,e:5,col:'#A77C4E',kpi:'150 outlets; 10 bars/outlet/week',del:'LuLu/Carrefour listings, online stores, sampling',dep:'Research & compliance'},
-  {n:'Marketing campaigns',s:3,e:12,col:'#D9AF79',kpi:'≥3% engagement; ≥15% sampling conversion',del:'Diaspora creators, Diwali and Ramadan campaigns',dep:'Pilot launch'},
-  {n:'Distribution expansion (Abu Dhabi, Al Ain)',s:5,e:9,col:'#B98F5E',kpi:'400 outlets by month 9',del:'Abu Dhabi listings, cold-chain vans',dep:'Pilot results'},
-  {n:'Performance evaluation',s:8,e:10,col:'#8C6A47',kpi:'Repeat rate ≥30%; heat claims <1%',del:'Sell-through review, price check, segment review',dep:'Expansion'},
-  {n:'Long-term growth',s:10,e:12,col:'#F2D2A6',kpi:'Northern emirates plan; GCC hub decision',del:'75%/90% variants, gift range, free-zone warehouse study',dep:'Evaluation'}
-];
-const MILESTONES = [
-  {m:1,n:'Distributor appointed'},{m:3,n:'Registration complete'},{m:4,n:'Pilot listings live'},{m:9,n:'400 outlets'},{m:10,n:'Diwali campaign'},{m:12,n:'Year-1 review'}
-];
-
-const EMIRATES = [
-  {id:'AUH',n:'Abu Dhabi',data:'About 15% of the Indian diaspora lives in Abu Dhabi emirate (MEA).',src:'mea',retail:'LuLu head office region; Carrefour, Spinneys; Yas Mall.',rec:'Phase 2 (months 5–9): hypermarkets and Al Ain.'},
-  {id:'DXB',n:'Dubai',data:'Population 4,006,656 (Sep 2025); more than half of the Indian community lives in Dubai.',src:'fcsc24',retail:'Densest modern retail and quick-commerce; Indian-dominated areas such as Al Barsha, Karama, Bur Dubai.',rec:'Phase 1 lead market: hypermarkets, Indian grocers, online.'},
-  {id:'SHJ',n:'Sharjah',data:'No verified Sharjah-specific population or chocolate data used.',src:null,retail:'Large Indian residential areas (e.g. Al Nahda); LuLu and Indian grocers.',rec:'Phase 1 with Dubai: value packs and festive promotions.'},
-  {id:'AJM',n:'Ajman',data:'No verified regional statistics used.',src:null,retail:'Hypermarkets and neighbourhood groceries.',rec:'Phase 3: via distributor routes from Sharjah.'},
-  {id:'UAQ',n:'Umm Al Quwain',data:'No verified regional statistics used.',src:null,retail:'Smaller grocery network.',rec:'Phase 3: distributor coverage only.'},
-  {id:'RAK',n:'Ras Al Khaimah',data:'No verified regional statistics used.',src:null,retail:'Hypermarkets and tourist retail.',rec:'Phase 3.'},
-  {id:'FUJ',n:'Fujairah',data:'No verified regional statistics used.',src:null,retail:'Hypermarkets; east-coast logistics.',rec:'Phase 3.'}
-];
-
-const RECS = [
-  {i:'route',n:'Market entry strategy',s:'Direct exporting via one lead distributor',d:'Amul already sells chocolates in the UAE through three importers, so this is market expansion. A tendered lead importer-distributor gives GCMMF control of price and brand with low investment, handles ZAD registration, cold storage and retail relationships. Licensing is rejected (quality risk); a JV or subsidiary is premature.',src:'amulX'},
-  {i:'users',n:'Target segment',s:'Indian expatriate households (score 4.40/5)',d:'Highest weighted score on size, accessibility and brand fit; secondary target is health-conscious buyers (3.90) through 75%/90% variants.',src:'amb'},
-  {i:'gem',n:'Positioning',s:'Affordable premium, pure cocoa butter',d:'"Real dark chocolate made only with cocoa butter, from India’s most trusted food brand." Sits between Galaxy (mass) and Lindt (luxury).',src:'amulP'},
-  {i:'store',n:'Distribution',s:'Hypermarkets + Indian grocers + online',d:'LuLu, Carrefour, Spinneys, Union Coop and Indian grocers (proposed targets, not confirmed partners) plus Amazon.ae, noon, talabat mart. Dubai and Sharjah first.',src:'mordor'},
-  {i:'tag',n:'Pricing',s:'AED 14.95 per 150 g (AED 9.97/100 g)',d:'About 32% below Bournville and 58% below Lindt 70% per gram. Cost-plus build-up gives AED 12.42 (CEPA 0% duty), leaving ~AED 2.5 for promotions and listing fees.',src:'crfL'},
-  {i:'shield',n:'Risk priorities',s:'Heat damage, promotions, acceptance',d:'Temperature damage scores 16 (High). Mitigate with reefer logistics, 15–20°C storage and insulated cartons; sampling for 55% acceptance; value bundles against competitor promotions.',src:'heat'}
-];
-
-const QA = [
-  {q:'Why is the UAE attractive for Amul Dark Chocolate?',k:['why','uae','attractive','market'],a:'The UAE combines a fast-growing population (12.06 million in 2025, +7%), high income (GDP per capita US$50,220 in 2024), strong growth (real GDP +6.2% in 2025), about 4.36 million Indian residents who already know Amul, 99% internet penetration and CEPA tariff preferences.',r:['fcsc25','imf25','gdp25','amb','cepa']},
-  {q:'Which consumer segment should Amul target?',k:['segment','target','who','consumer'],a:'Indian expatriate consumers rank first (4.40/5) at the report weights, ahead of health-conscious dark chocolate buyers (3.90). They are large, concentrated in Dubai and Sharjah, easy to reach through LuLu and Indian grocers and already trust Amul. Ratings are analytical estimates; try the Target Market Evaluation simulator to test other weights.',r:['amb']},
-  {q:'How can Amul compete with Lindt?',k:['lindt','compete','competition','competitor'],a:'Not head-on. Lindt Excellence 70% sells at AED 23.49 per 100 g at Carrefour UAE; Amul at a proposed AED 9.97 per 100 g is about 58% cheaper while offering a cocoa-butter-only recipe. Amul should use value per gram, its 75%/90% variants for enthusiasts and festive diaspora gifting, rather than luxury cues.',r:['crfL','amulP']},
-  {q:'What are the major market risks?',k:['risk','risks','threat','danger'],a:'Temperature damage is the top risk (score 16, High): UAE cities reach the mid-40s °C while Amul specifies 15–20°C storage. Next are competitive promotions, acceptance of 55% cocoa and cocoa cost volatility (12 each). Regulatory registration and exchange rate are lower.',r:['heat','amulP']},
-  {q:'What is the recommended pricing strategy?',k:['price','pricing','aed','cost'],a:'Affordable-premium pricing at AED 14.95 per 150 g (AED 9.97 per 100 g): close to Galaxy per gram, well below Bournville (AED 14.75/100 g) and Lindt. A cost-plus build-up gives AED 12.42 with CEPA duty at 0% or AED 13.04 at 5%, leaving headroom for promotions. Costs and margins are illustrative assumptions.',r:['spB','crfL','vat']},
-  {q:'Which market entry strategy is most suitable?',k:['entry','strategy','mode','export','distributor'],a:'Direct exporting through one lead UAE importer-distributor. Amul already reaches the UAE through importers, so this is expansion: it raises control over price and brand without the investment of a JV or subsidiary.',r:['amulX','dm']},
-  {q:'Is Amul Dark Chocolate already sold in the UAE?',k:['already','available','present','sold'],a:'Amul’s website lists chocolates among products imported into the UAE by three importers, and Amul Dark Chocolate 150 g is available cross-border on Desertcart. No mainstream listing (Carrefour UAE, LuLu online) was found, so the plan is framed as expansion.',r:['amulX','desert']},
-  {q:'What does CEPA change?',k:['cepa','tariff','duty','trade agreement'],a:'Under CEPA (in force May 2022) the UAE eliminates duties on 97% of tariff lines, covering 99% of Indian exports by value; 80.3% were immediate. The chocolate line (HS 1806) staging still needs checking; otherwise the standard 5% duty applies. Bilateral trade reached US$100.06 bn in FY2024-25.',r:['cepa','mofa']}
-];
-
-const COMPLIANCE = [
-  ['Task 1','Company, product and country selection with justification','Executive Overview, UAE Intelligence'],
-  ['Task 1','AI-assisted research and methodology','AI Research Insights, Research & References'],
-  ['Task 1','Country analysis with sourced statistics','UAE Country Intelligence'],
-  ['Task 1','PESTLE analysis','PESTLE Analysis'],
-  ['Task 1','Industry analysis and Porter’s Five Forces','Chocolate Market Analysis'],
-  ['Task 1','Competitor benchmarking with real AED prices','Competitor Intelligence'],
-  ['Task 1','SWOT (and TOWS)','SWOT Analysis'],
-  ['Task 2','Segmentation (geographic, demographic, psychographic, behavioural)','Consumer Segmentation'],
-  ['Task 2','Weighted target market evaluation matrix','Target Market Evaluation'],
-  ['Task 2','Customer persona','Consumer Segmentation'],
-  ['Task 2','Positioning strategy and perceptual map','Brand Positioning'],
-  ['Task 2','Market entry strategy (expansion framing)','Market Entry Strategy'],
-  ['Task 2','Marketing mix (4Ps), standardise vs adapt','Marketing Mix'],
-  ['Task 2','Risk assessment and recommendations','Risk Intelligence, Strategic Roadmap'],
-  ['Both','Interactive country dashboard','This dashboard'],
-  ['Both','References with links','Research & References']
-];
-
-const METHODS = [
-  ['Segmentation','Five segments built from the report using geographic, demographic, psychographic and behavioural bases. Personas are illustrative analytical profiles.'],
-  ['Weighted evaluation','Score = Σ(normalised weight × rating). Ratings 1–5 are the author’s analytical estimates; weights are normalised to 100%.'],
-  ['Positioning','Price axis = real AED per 100 g (Amul proposed). Quality axis = analytical 1–5 assessment, not a consumer survey.'],
-  ['Risk assessment','Score = probability × impact (1–5 each). 15–25 High, 8–14 Medium, below 8 Low.'],
-  ['Financial simulation','Illustrative unit economics from user-set assumptions; not GCMMF financial data.'],
-  ['AI-assisted research','AI tools searched sources, collected retailer prices and checked arithmetic. Each figure was checked against its original source.']
-];
-
-/* ============ CORE ============ */
-const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-const NAV=[
- {id:'overview',n:'Executive Overview',i:'layout-dashboard',kw:'summary kpi verdict globe'},
- {id:'country',n:'UAE Country Intelligence',i:'globe',kw:'population gdp inflation emirates cepa trade urbanisation e-commerce'},
- {id:'market',n:'Chocolate Market Analysis',i:'chart-column',kw:'market size porter seasonal calendar imports dark chocolate cocoa'},
- {id:'pestle',n:'PESTLE Analysis',i:'landmark',kw:'political economic social technological legal environmental'},
- {id:'competitors',n:'Competitor Intelligence',i:'swords',kw:'lindt bournville galaxy carrefour price cocoa benchmark'},
- {id:'swot',n:'SWOT Analysis',i:'grid-2x2',kw:'strengths weaknesses opportunities threats tows'},
- {id:'segments',n:'Consumer Segmentation',i:'users',kw:'persona geographic demographic psychographic behavioural'},
- {id:'evaluation',n:'Target Market Evaluation',i:'target',kw:'weighted matrix weights ratings sensitivity ranking'},
- {id:'positioning',n:'Brand Positioning',i:'gem',kw:'perceptual map usp tagline positioning statement'},
- {id:'entry',n:'Market Entry Strategy',i:'route',kw:'direct exporting licensing joint venture subsidiary distribution flow'},
- {id:'mix',n:'Marketing Mix',i:'megaphone',kw:'product price place promotion 4ps calendar standardisation'},
- {id:'finance',n:'Financial Simulator',i:'calculator',kw:'revenue profit break-even margin scenario'},
- {id:'risk',n:'Risk Intelligence',i:'shield-alert',kw:'heatmap register mitigation probability impact'},
- {id:'roadmap',n:'Strategic Roadmap',i:'milestone',kw:'gantt timeline milestones kpi 12 month'},
- {id:'ai',n:'AI Research Insights',i:'sparkles',kw:'key questions methodology ai research'},
- {id:'refs',n:'Research & References',i:'book-open',kw:'sources references methodology compliance checklist limitations'}
-];
-const DEF={cur:'AED',w:Object.fromEntries(CRIT.map(c=>[c.k,c.w])),r:JSON.parse(JSON.stringify(Object.fromEntries(SEGS.map(s=>[s.id,s.r])))),
-  risks:Object.fromEntries(RISKS.map(r=>[r.id,{p:r.p,i:r.i}])),amulPrice:14.95,reduce:false,saved:[]};
-let S=JSON.parse(JSON.stringify(DEF));
-try{const raw=localStorage.getItem('amulUAEdash');if(raw){const o=JSON.parse(raw);S=Object.assign(S,o)}}catch(e){}
-function save(){try{localStorage.setItem('amulUAEdash',JSON.stringify(S))}catch(e){}}
-
-const REDUCE=()=>S.reduce||window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const nf=(v,d=0)=>v==null||isNaN(v)?'—':Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
-function money(aed,d=2){if(aed==null||isNaN(aed))return '—';return S.cur==='AED'?'AED '+nf(aed,d):'₹'+nf(aed*FX.rate,d>0&&Math.abs(aed*FX.rate)<1000?d:0)}
-function curLabel(){return S.cur==='AED'?'AED':'INR (₹)'}
-function srcA(k){const s=SRC[k];if(!s)return '';return `<a href="${s.url}" target="_blank" rel="noopener">${s.org}</a>`}
-const ST={V:['v','Verified'],H:['v','Historical'],F:['f','Published forecast'],E:['e','Analytical estimate'],S:['s','Illustrative scenario'],R:['r','Recommendation'],P:['e','Proposed price'],NA:['e','Not available']};
-function tag(st){const t=ST[st]||ST.E;return `<span class="tag ${t[0]}">${t[1]}</span>`}
-function ico(n){return `<i data-lucide="${n}"></i>`}
-function icons(){try{window.lucide&&lucide.createIcons()}catch(e){}}
-function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2200)}
-function dl(name,blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
-function csv(name,rows){const esc=v=>{v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};dl(name,new Blob(['﻿'+rows.map(r=>r.map(esc).join(',')).join('\n')],{type:'text/csv'}));toast('CSV downloaded')}
-
-/* ECharts theme */
-const G={gold:'#D9AF79',gl:'#F2D2A6',br:'#A77C4E',bd:'#72563C',tx:'#F3EFE9',tx2:'#B3ADA3',tx3:'#85817A',line:'#393630',pos:'#83B49B',neg:'#C97870',warn:'#D6AD72',card:'#242422'};
-const PAL=['#D9AF79','#A77C
+/* ---- logic (pure) ---- */
+const BW=[30,25,20,15,10],CR=["Product fit","Ease of reaching buyers","Repeat-purchase potential","Price fit","Differentiation"],SC=[[5,4,2],[5,3,4],[4,5,4],[4,2,3],[4,3,3]],SG=["Home-brewing households","Karak cafés","Tea-bag shoppers"];
+function totals(w){const s=w.reduce((a,b)=>a+b,0);return s>0?[0,1,2].map(j=>SC.reduce((a,r,i)=>a+r[j]*w[i]/s,0)):null}
+function rank(w){const t=totals(w);if(!t)return{zero:true};const o=[0,1,2].sort((a,b)=>t[b]-t[a]),s=w.reduce((a,b)=>a+b,0);return{t,o,gap:t[o[0]]-t[o[1]],tie:t[o[0]]-t[o[1]]<.0005,dif:CR.map((c,i)=>[c,(SC[i][o[0]]-SC[i][o[1]])*w[i]/s])}}
+function sens(wr){const k=(1-wr)/.8;return BW.map((b,i)=>i==2?wr*100:b*k)}
+const prem=(g,r)=>(g/r-1)*100;
+function verdict(u,r,c,rt){const R=[];if(u<4)R.push(`units ${u} < 4 (stop floor)`);if(r<15)R.push(`repeat ${r}% < 15% (stop floor)`);if(c<=0&&rt)R.push("contribution still ≤ 0 after a retest");if(R.length)return{v:"Stop",why:R};if(u>=8&&r>=30&&c>0)return{v:"Expand",why:["units ≥ 8, repeat ≥ 30% and contribution > 0"]};if(u<8)R.push(`units ${u} are below 8 but not below 4`);if(r<30)R.push(`repeat ${r}% is below 30% but not below 15%`);if(c<=0)R.push("contribution ≤ 0: retest at a new price, pack or store mix");return{v:"Adjust",why:R}}
+function plan(p){const c=p.nt-p.vc,pk=[p.u1,p.u2,p.u3].map(u=>25*4*u),tot=pk.reduce((a,b)=>a+b,0);return{c,pk,tot,kg:tot*.25,tc:tot*c,be:c>0?Math.ceil(p.fx/c):null,net:tot*c-p.fx}}
+</script>
+<script>
+const $=id=>document.getElementById(id),f2=x=>x.toFixed(2);
+const TAB=["Overview","Market & pricing","Segments","Environment","Dubai pilot"],IC=["⌂","▤","◐","☰","▶"];
+$("nav").innerHTML=TAB.map((t,i)=>`<button role="tab" aria-selected="${i==0}" onclick="go(${i})"><i>${IC[i]}</i>${t.split(" ")[0]}</button>`).join("");
+function go(i){document.querySelectorAll("section").forEach((s,j)=>s.classList.toggle("on",i==j));document.querySelectorAll("nav button").forEach((b,j)=>b.setAttribute("aria-selected",i==j));scrollTo(0,0);anim($("p"+i));if(i==0)cnt($("p0"))}
+const TG={p:'<span class="tag t1">Published fact</span>',r:'<span class="tag t2">Retailer observation</span>',a:'<span class="tag t3">Analyst score</span>',s:'<span class="tag t4">Pilot assumption</span>'};
+const src=(t,x)=>`<details class="src"><summary>Source and calculation</summary><p>${t.map(k=>TG[k]).join(" ")}</p><p>${x}</p></details>`;
+// overview
+function oview(){const G=[["Total UAE imports",260.80,221.01],["Imports from India",78.68,83.91]];let s=`<svg viewBox="0 0 640 330" role="img" aria-label="UAE tea imports 2022 and 2023, total and from India, US$ million">`;[0,100,200,300].forEach(v=>{const y=270-v/300*220;s+=`<line x1="60" x2="620" y1="${y}" y2="${y}" stroke="rgba(255,255,255,.1)"/><text x="52" y="${y+5}" text-anchor="end" font-size="15" fill="#c9bfa8">${v}</text>`});
+G.forEach((g,i)=>[1,2].forEach(k=>{const v=g[k],h=v/300*220,x=110+i*270+(k-1)*100;s+=`<rect tabindex="0" data-tip="${g[0]} ${k==1?2022:2023}: US$${f2(v)}m" x="${x}" y="${270-h}" width="86" height="${h}" fill="${k==1?'#7c7a8c':i?'#f2b84b':'#2dd4bf'}"/><text x="${x+43}" y="${262-h}" text-anchor="middle" font-size="17" font-weight="700">${f2(v)}</text><text x="${x+43}" y="292" text-anchor="middle" font-size="15" fill="#c9bfa8">${k==1?2022:2023}</text>`;if(k==1)s+=`<text x="${110+i*270+95}" y="318" text-anchor="middle" font-size="17" font-weight="700" fill="#2dd4bf">${g[0]}</text>`}));
+$("c0").innerHTML=s+"</svg>";const ch=(a,b)=>((b/a-1)*100).toFixed(1);
+$("tk0").innerHTML=`UAE tea imports fell ${Math.abs(ch(260.80,221.01))}% (US$260.80m to US$221.01m, 2022 to 2023) while imports from India rose ${ch(78.68,83.91)}% (US$78.68m to US$83.91m), lifting India’s share from ${(78.68/260.80*100).toFixed(1)}% to ${(83.91/221.01*100).toFixed(1)}%. Trade data justifies investigating the opportunity; only the pilot can show demand for this 250 g pack.`;
+$("s0").innerHTML=src(["p"],"World Bank WITS / UN Comtrade, HS 0902, UAE imports, US$ million, 2022 and 2023. Change = 2023 ÷ 2022 − 1. India share = India ÷ World. <a href='https://wits.worldbank.org/trade/comtrade/en/country/ALL/year/2023/tradeflow/Imports/partner/WLD/product/0902' target='_blank' rel='noopener'>WITS link</a>")}
+// pricing
+const CP={"Peacock":[250,3.40,""],"Lipton Yellow Label":[800,5.31,""],"Tata Tea Premium":[400,4.88," (Tata’s own)"],"Tata Tea Agni":[250,3.20," (Tata’s own)"]};let ck="Peacock";
+function price(){$("cpb").innerHTML=Object.keys(CP).map(k=>`<button class="b" role="radio" aria-checked="${k==ck}" onclick="ck='${k}';price()">${k}${CP[k][2]}</button>`).join("");const c=CP[ck],p=prem(5.80,c[1]);
+const R=[["Tata Tea Gold",5.80,"gd"],...Object.keys(CP).map(k=>[k,CP[k][1],k==ck?"":"ng"])];
+$("cpc").innerHTML=R.map(r=>`<div class="row" data-tip="${r[0]}: AED ${f2(r[1])} per 100 g"><span>${r[0]}</span><div class="tr"><i class="${r[2]}" style="width:${r[1]/6.5*100}%"></i></div><b>${f2(r[1])}</b></div>`).join("")+`<p style="font-size:14px;color:var(--mu)">AED per 100 g</p>`;
+$("cpo").innerHTML=`<div class="big">${p.toFixed(1)}%</div><p>premium: Gold AED 5.80 vs ${ck} AED ${f2(c[1])} per 100 g.</p><table><tr><th></th><th>Pack</th><th>AED / pack</th></tr><tr><td>Tata Tea Gold</td><td>250 g</td><td>14.50</td></tr><tr><td>${ck}${c[2]}</td><td>${c[0]} g</td><td>≈${f2(c[1]*c[0]/100)}*</td></tr></table><p style="font-size:14px;color:var(--mu)">*Derived from per-100 g price. Retailer: Talabat; branch: Al Adil, Dubai; observed 21 Nov 2026. Gold’s stock indicator read zero (listed, not necessarily on shelf); stock for the others was not recorded.</p>`;
+$("tk1").innerHTML=`Gold costs ${p.toFixed(1)}% more per 100 g than ${ck}. Even if shoppers value the Tata name, the pilot should test AED 14.50 against one alternative price and one larger pack before assuming the premium holds.`;
+$("s1").innerHTML=src(["r"],"Talabat UAE grocery listing, Al Adil branch, Dubai, 21 Nov 2026; AED per 100 g as listed. Premium = 5.80 ÷ rival − 1. <a href='https://www.talabat.com/uae/grocery/38717/al-adil-alqusais-2/coffee-tea/tea?aid=1260' target='_blank' rel='noopener'>Listing</a>")}
+const SUP={2022:{World:260.80,India:78.68},2023:{World:221.01,India:83.91,Kenya:70,"Sri Lanka":26.00}};let sm="v";
+function smode(m){sm=m;$("mv").setAttribute("aria-pressed",m=="v");$("ms").setAttribute("aria-pressed",m=="s");sup()}
+function sup(){const y=$("sy").value,d=SUP[y],N=["India","Kenya","Sri Lanka"],all=N.every(n=>d[n]!=null),o=all?d.World-N.reduce((a,n)=>a+d[n],0):null;
+const rows=[...N.map(n=>[n,d[n]]),["Other suppliers",o],["World (denominator)",d.World]];
+$("sb").innerHTML=rows.map((r,i)=>{const v=r[1],a=(r[0]=="Kenya"||r[0]=="Other suppliers")&&y==2023?"≈":"";return`<div class="row" data-tip="${r[0]} ${y}"><span>${r[0]}</span><div class="tr"><i class="${i==0?'gd':i==4?'ng':''}" style="width:${v==null?0:v/d.World*100}%"></i></div><b>${v==null?"not verified":a+(sm=="v"?f2(v):(v/d.World*100).toFixed(1)+"%")}</b></div>`}).join("");
+$("sn").textContent=y==2023?"2023: India and World from WITS. Kenya (≈70, rounded) and Sri Lanka (26.00) from TrendEconomy’s UN Comtrade-based table; confirm in WITS. Other = World − three suppliers.":"2022: only India and World are verified; Kenya, Sri Lanka and Other are not.";
+$("s1b").innerHTML=src(["p"],"WITS / UN Comtrade HS 0902 (World, India), HS 090230 = US$39.30m (2023); TrendEconomy for Kenya and Sri Lanka. Share = supplier ÷ World. Unit: US$ million. <a href='https://trendeconomy.com/data/h2/UnitedArabEmirates/0902' target='_blank' rel='noopener'>TrendEconomy</a>")}
+// segments
+const SD=[["Daily milk chai brewed at home","Familiar brand, rich aromatic cup, suitable pack size","Neighbourhood grocers, supermarkets, Talabat listing","Loose black tea matches loose-leaf chai drinkers; Gold already listed on Talabat","Fit 5 and reach 5; repeat 4 (households can switch brands); price 4 (familiarity may support a premium); differentiation 4."],["All-day strong tea service","Cost per kg and consistency","Direct sales visits to many separate outlets","Loose leaf suits strong milk tea","Repeat 5 (daily buying) but reach 3, price 2 (cost-led buying), differentiation 3. Outlet numbers and buying patterns not verified."],["Quick single cup","Speed and convenience","Supermarkets and online grocery, with crowded shelves","Gold is loose tea; a tea-bag format was not verified","Reach 4 and repeat 4, but fit 2. Needs a tea-bag format this analysis does not assess."]];let sg=0,W=[...BW];
+function seg(){$("sgb").innerHTML=SG.map((s,i)=>`<button class="b" role="radio" aria-checked="${i==sg}" onclick="sg=${i};seg()">${s}</button>`).join("");const d=SD[sg],L=["Buying occasion","Priorities","Likely channel","Product fit","Score rationale"];$("sgd").innerHTML=`<table>${d.map((x,i)=>`<tr><th style="width:150px">${L[i]}</th><td>${x}${i<3?' <span class="tag t4">Assumption to test</span>':i==4?' <span class="tag t3">Analyst judgment</span>':''}</td></tr>`).join("")}</table>`}
+function mx(){const s=W.reduce((a,b)=>a+b,0)||1;$("mx").innerHTML=`<table><tr><th>Criterion</th><th>Weight</th><th>A</th><th>B</th><th>C</th></tr>${CR.map((c,i)=>`<tr><td>${c}</td><td><input type="range" min="0" max="100" step="0.5" value="${W[i]}" aria-label="${c} weight" oninput="W[${i}]=+this.value;calc()"><span id="wv${i}"></span></td>${SC[i].map(v=>`<td>${v}</td>`).join("")}</tr>`).join("")}</table><p style="font-size:14px;color:var(--mu)">A = households, B = karak cafés, C = tea-bag shoppers. Weights are normalised to 100%.</p>`}
+function calc(){const s=W.reduce((a,b)=>a+b,0),r=rank(W);W.forEach((w,i)=>{const e=$("wv"+i);if(e)e.textContent=s?" "+(w/s*100).toFixed(1)+"%":" 0%"});
+if(r.zero){$("rk").innerHTML="";$("ex").textContent="All weights are zero, so there is no ranking. Move a slider or press Reset.";return}
+$("rk").innerHTML=r.t.map((v,j)=>`<div class="row"><span>${SG[j]}</span><div class="tr"><i class="${j==r.o[0]&&!r.tie?'gd':''}" style="width:${v/5*100}%"></i></div><b>${f2(v)}</b></div>`).join("");
+const n=SG,a=r.o[0],b=r.o[1];if(r.tie){$("ex").textContent=`Tie: ${n[a]} and ${n[b]} both score ${f2(r.t[a])}.`;return}
+const top=[...r.dif].sort((x,y)=>y[1]-x[1])[0],ng=r.dif.filter(d=>d[1]<0).sort((x,y)=>x[1]-y[1])[0];
+$("ex").innerHTML=`<b>Winner:</b> ${n[a]} (${f2(r.t[a])}). <b>Runner-up:</b> ${n[b]} (${f2(r.t[b])}). <b>Gap:</b> ${f2(r.gap)}. Largest contribution to the lead: ${top[0].toLowerCase()} (+${f2(top[1])})`+(ng?`; ${n[b]} lead on ${ng[0].toLowerCase()} (${f2(-ng[1])}).`:".")}
+function rst(){W=[...BW];mx();calc();$("rw").value=20;rwu()}function tie(){W=sens(.6);mx();calc();$("rw").value=60;rwu()}
+function sv(){const X=x=>70+x*540,Y=y=>250-(y-2.5)/2.5*210,col=["#f2b84b","#2dd4bf","#a79f8c"];let s=`<svg viewBox="0 0 640 300" role="img" aria-label="Segment totals versus repeat-purchase weight">`;[2.5,3.5,4.5].forEach(v=>s+=`<line x1="70" x2="610" y1="${Y(v)}" y2="${Y(v)}" stroke="rgba(255,255,255,.1)"/><text x="62" y="${Y(v)+5}" text-anchor="end" font-size="15" fill="#c9bfa8">${v}</text>`);
+[0,.2,.4,.6,.8,1].forEach(x=>s+=`<text x="${X(x)}" y="278" text-anchor="middle" font-size="15" fill="#c9bfa8">${x*100}%</text>`);
+[0,1,2].forEach(j=>{let d="";for(let i=0;i<=100;i++){const t=totals(sens(i/100));d+=(i?"L":"M")+X(i/100)+" "+Y(t[j])}s+=`<path class="ln" pathLength="1" d="${d}" fill="none" stroke="${col[j]}" stroke-width="4"/>`});
+const lb=["Households","Karak cafés","Tea-bag"];[0,1,2].forEach(j=>{const t=totals(sens(1))[j];s+=`<text x="612" y="${Y(t)+(j==2?18:j==0?-6:5)}" text-anchor="end" font-size="14" fill="${col[j]}" font-weight="700">${lb[j]}</text>`});
+s+=`<line id="mk" x1="${X(.2)}" x2="${X(.2)}" y1="30" y2="250" stroke="#f2b84b" stroke-width="2"/>`+[0,1,2].map(j=>`<circle id="cd${j}" r="7" fill="${col[j]}" stroke="#fff"/>`).join("")+`<line x1="${X(.6)}" x2="${X(.6)}" y1="30" y2="250" stroke="#f87171" stroke-dasharray="6 4"/><text x="${X(.6)-6}" y="40" text-anchor="end" font-size="15" fill="#f87171" font-weight="700">Tie at 60%</text><text x="340" y="298" text-anchor="middle" font-size="15" fill="#c9bfa8">Repeat-purchase weight</text></svg>`;$("sv").innerHTML=s;rwu();
+$("s2").innerHTML=src(["a"],"Weights 30/25/20/15/10; scores 1–5 are analyst judgments. Total = Σ score × weight ÷ Σ weight. Base totals 4.55, 3.55, 3.15. Sensitivity: repeat weight w, others × (1 − w) ÷ 0.8. At w = 60%, households and cafés both score 4.275.")}
+// environment
+const PE=[["Legal","Dubai Municipality item registration and label assessment; Arabic product name, ingredients and origin required","Delay and cost before any sale","Distributor completes registration and Arabic label approval first; no pilot start until approved","Dubai Municipality IRS guide; U.S. trade.gov UAE labelling","Launch timing",1,"p"],["Economic","Gold AED 5.80 per 100 g vs Peacock 3.40 and Agni 3.20 (+70.6%, +81.3%)","Gold must justify a premium","Test price and pack size in the pilot","Talabat, Al Adil, Dubai, 21 Nov 2026","Retail price test",1,"r"],["Political and trade","India–UAE CEPA in force; UAE eliminates tariffs on 97% of lines. Tariff line and eligibility for Gold unverified","Landed cost uncertain","Check the UAE Ministry of Economy CEPA tool; plan for a 5% duty meanwhile","UAE Ministry of Economy CEPA tool; Govt of India CEPA FAQ","Landed cost and contribution margin",1,"s"],["Competition and costs","5% VAT; freight, duty, labels, distributor and retailer margins; listing fees unknown","Thin margin if the premium fails","Calculate contribution per pack before scaling; ask the distributor about listing fees","u.ae VAT page; no evidence found on listing fees","Expand / Adjust / Stop",0,"s"],["Social","Indians are about 35% of residents (Embassy estimate; 4.3M vs over 4.5M discrepancy); the daily chai habit is assumed","Clear first audience, but segment size unknown","Neighbourhood grocers, festival promotions, community groups","Embassy of India, Indian Community in UAE","Target segment",0,"a"],["Technological","Desertcart third-party Gold 250 g listings at AED 84, 108 and 21 (sellers and product unconfirmed)","Uncontrolled online prices","Set a recommended price and monitor listings","Desertcart UAE listings","Online role in the pilot",0,"r"],["Environmental","No evidence gathered that this changes the decision; warm storage may lower quality (assumption)","Minor quality risk","Check storage with the distributor","Assumption","Stock handling",0,"s"]];let flt="All",ps=0;
+function env(){const F=["All",...PE.map(p=>p[0])];$("pf").innerHTML=F.map(f=>`<button class="b" aria-pressed="${f==flt}" onclick="flt='${f}';env()">${f}</button>`).join("");const R=PE.map((p,i)=>[p,i]).filter(x=>flt=="All"||x[0][0]==flt);if(!R.some(x=>x[1]==ps))ps=R[0][1];
+$("pt").innerHTML=R.map(([p,i])=>`<tr tabindex="0" class="${p[6]?'maj':''} ${i==ps?'sel':''}" onclick="ps=${i};env()" onkeydown="if(event.key=='Enter'||event.key==' '){event.preventDefault();ps=${i};env()}"><td><b>${p[0]}</b></td><td>${p[1]}</td><td>${p[2]}</td><td>${p[3]}</td></tr>`).join("");const p=PE[ps];
+$("pd").innerHTML=`<h3>${p[0]}</h3><p><b>Decision affected:</b> ${p[5]}</p><p><b>Source:</b> ${p[4]} ${TG[p[7]]}</p>`+(p[0]=="Political and trade"?'<div class="warn">Unverified: the CEPA tariff line and eligibility for Gold. The 5% duty is a planning assumption.</div>':"")}
+// pilot
+const BASE={u1:4,u2:6,u3:8,rp:30,nt:9,vc:6,fx:3000};
+function gp(){const p={};for(const k in BASE)p[k]=+$(k=="rp"?"rp":k=="nt"?"nt":k).value||0;return p}
+function prst(){for(const k in BASE)$(k).value=BASE[k];$("rt").checked=false;pilot()}
+function pilot(){const E=gp(),pe=plan(E),pb=plan(BASE),ve=verdict(E.u3,E.rp,pe.c,$("rt").checked),vb=verdict(BASE.u3,BASE.rp,pb.c,false);
+$("vd").textContent=ve.v;$("vd").style.color=ve.v=="Expand"?"#4ade80":ve.v=="Stop"?"#f87171":"#f2b84b";$("vx").textContent="Reason: "+ve.why.join("; ")+".";$("rg").setAttribute("stroke-dasharray",Math.min(1,E.u3/8)*302+" 302");$("rg").style.stroke=$("vd").style.color;$("rgt").textContent=E.u3+"/8";
+const R=[["Units/store/week, wks 1–4",BASE.u1,E.u1],["Wks 5–8",BASE.u2,E.u2],["Wks 9–12",BASE.u3,E.u3],["Repeat purchase %",BASE.rp,E.rp],["Net receipts / pack (AED)",f2(BASE.nt),f2(E.nt)],["Variable cost / pack (AED)",f2(BASE.vc),f2(E.vc)],["Contribution / pack (AED)",f2(pb.c),f2(pe.c)],["12-week packs",pb.tot,pe.tot],["12-week kg",pb.kg,pe.kg],["12-week contribution (AED)",f2(pb.tc),f2(pe.tc)],["Break-even packs (fixed cost)",pb.be??"n/a",pe.be??"n/a"],["Verdict",vb.v,ve.v]];
+$("cmp").innerHTML=`<table><tr><th>Hypothetical scenario</th><th>Baseline</th><th>Edited</th></tr>${R.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td><b>${r[2]}</b></td></tr>`).join("")}</table><span class="tag t4">Pilot assumptions, not results</span>`;
+wkc(E,pe);const q=plan({...E,u3:8});$("sc").innerHTML=`At 8 packs per store per week, 25 stores sell 200 packs a week. Over weeks 9–12 (4 weeks) that is <b>800 packs, or 200 kg</b> at 250 g each. Your edited 12-week scenario sells ${pe.pk[0]} + ${pe.pk[1]} + ${pe.pk[2]} = ${pe.tot} packs (${pe.kg} kg).`+src(["s"],"Packs = 25 stores × 4 weeks × units per store per week, per phase. kg = packs × 0.25. Contribution = net receipts − variable cost. Break-even = ⌈fixed cost ÷ contribution⌉.")}
+["u1","u2","u3","rp","nt","vc","fx"].forEach(k=>$(k).addEventListener("input",pilot));$("rt").addEventListener("change",pilot);
+function anim(r){(r||document).querySelectorAll(".tr i").forEach((e,k)=>{const w=e.style.width;e.style.transition="none";e.style.width="0";e.offsetWidth;e.style.transition="width .9s cubic-bezier(.2,.8,.2,1) "+k*30+"ms";e.style.width=w})}
+function cnt(r){r.querySelectorAll("[data-n]").forEach(e=>{const n=+e.dataset.n,d=+(e.dataset.d||0),t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/1200);e.textContent=(n*(1-Math.pow(1-p,3))).toLocaleString("en",{minimumFractionDigits:d,maximumFractionDigits:d});if(p<1)requestAnimationFrame(f)})(t0)})}
+function ppu(){const p=+$("pp").value,g=p/2.5;$("ppv").textContent="AED "+f2(p);$("ppo").innerHTML=Object.keys(CP).map(k=>{const x=prem(g,CP[k][1]);return`<div class="row" data-tip="${k}: ${x.toFixed(1)}% vs Gold at AED ${f2(p)}"><span>vs ${k}</span><div class="tr"><i class="${x<0?'ng':'gd'}" style="width:${Math.min(100,Math.abs(x)/1.2)}%"></i></div><b>${x>0?"+":""}${x.toFixed(1)}%</b></div>`}).join("")+`<p style="font-size:14px;color:var(--mu)">Gold per 100 g = ${f2(g)}. Premium = Gold ÷ rival − 1 on the Talabat per-100 g prices. The pilot tests AED 14.50 against one alternative price and one larger pack.</p>`}
+function rwu(){const w=+$("rw").value/100,t=totals(sens(w)),X=70+w*540,Y=y=>250-(y-2.5)/2.5*210,mk=$("mk");if(!mk)return;$("rwv").textContent=Math.round(w*100)+"%";mk.setAttribute("x1",X);mk.setAttribute("x2",X);t.forEach((v,j)=>{const c=$("cd"+j);c.setAttribute("cx",X);c.setAttribute("cy",Y(v))});const o=[0,1,2].sort((a,b)=>t[b]-t[a]);$("rwo").innerHTML=`<b>${SG[o[0]]}</b> leads at ${f2(t[o[0]])}; ${SG[o[1]]} ${f2(t[o[1]])}; ${SG[o[2]]} ${f2(t[o[2]])}.`+(Math.abs(t[0]-t[1])<.0005?" <b>Households and cafés tie.</b>":"")}
+function radar(){const cx=150,cy=130,R=95,col=["#f2b84b","#2dd4bf","#c084fc"],pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/5;return[cx+Math.cos(a)*R*v/5,cy+Math.sin(a)*R*v/5]};let s=`<svg viewBox="0 0 300 260" role="img" aria-label="Segment scores by criterion">`;[1,2,3,4,5].forEach(l=>s+=`<polygon points="${CR.map((_,i)=>pt(i,l).join(",")).join(" ")}" fill="none" stroke="rgba(255,255,255,.1)"/>`);CR.forEach((c,i)=>{const[x,y]=pt(i,6.3);s+=`<text x="${x}" y="${y}" text-anchor="middle" font-size="12" fill="#c9bfa8">${c.split(" ")[0]}</text>`});[0,1,2].forEach(j=>s+=`<polygon class="rd" points="${CR.map((_,i)=>pt(i,SC[i][j]).join(",")).join(" ")}" fill="${col[j]}" fill-opacity="${j==sg?.35:.05}" stroke="${col[j]}" stroke-width="${j==sg?3.5:1.2}" stroke-opacity="${j==sg?1:.5}"/>`);$("rdr").innerHTML=s+"</svg>"}
+function wkc(E,pe){const U=[...Array(12)].map((_,i)=>[E.u1,E.u2,E.u3][Math.floor(i/4)]),mx=Math.max(10,...U)*1.1,Y=v=>230-v/mx*200;let s=`<svg viewBox="0 0 640 290" role="img" aria-label="Units per store per week, weeks 1 to 12">`;
+[4,8].forEach(v=>{const c=v==8?"#4ade80":"#f87171";s+=`<line x1="50" x2="630" y1="${Y(v)}" y2="${Y(v)}" stroke="${c}" stroke-dasharray="6 4"/><text x="628" y="${Y(v)-5}" text-anchor="end" font-size="13" fill="${c}">${v==8?"Expand ≥ 8":"Stop < 4"}</text>`});
+U.forEach((u,i)=>s+=`<rect tabindex="0" data-tip="Week ${i+1}: ${u} units per store (${25*u} packs)" x="${60+i*47}" y="${Y(u)}" width="36" height="${230-Y(u)}" rx="5" fill="${i>=8?"#f2b84b":"#2dd4bf"}"/><text x="${78+i*47}" y="252" text-anchor="middle" font-size="13" fill="#c9bfa8">${i+1}</text>`);
+$("wk").innerHTML=s+`<text x="340" y="278" text-anchor="middle" font-size="14" fill="#c9bfa8">Week (orange = decision window, weeks 9–12)</text></svg>`;
+let cum=-E.fx;const P=[cum];U.forEach(u=>{cum+=25*u*pe.c;P.push(cum)});const lo=Math.min(0,...P),hi=Math.max(0,...P),sp=(hi-lo)||1,Y2=v=>230-(v-lo)/sp*200,X2=i=>60+i*50;
+s=`<svg viewBox="0 0 640 290" role="img" aria-label="Cumulative contribution after fixed cost, weeks 0 to 12"><line x1="50" x2="630" y1="${Y2(0)}" y2="${Y2(0)}" stroke="rgba(255,255,255,.35)"/><text x="628" y="${Y2(0)-6}" text-anchor="end" font-size="13" fill="#c9bfa8">Break-even (AED 0)</text><path d="${P.map((v,i)=>(i?"L":"M")+X2(i)+" "+Y2(v)).join(" ")}" fill="none" stroke="${cum>=0?"#4ade80":"#f87171"}" stroke-width="4"/>`;
+P.forEach((v,i)=>s+=`<circle tabindex="0" data-tip="End of week ${i}: AED ${Math.round(v).toLocaleString()}" cx="${X2(i)}" cy="${Y2(v)}" r="5" fill="${v>=0?"#4ade80":"#f87171"}"/>`);
+$("cu").innerHTML=s+`<text x="340" y="278" text-anchor="middle" font-size="14" fill="#c9bfa8">Weeks 0–12 · ends at AED ${Math.round(cum).toLocaleString()}</text></svg>`}
+{const a=window.price;window.price=function(){a();anim($("cpc"))};const b=window.sup;window.sup=function(){b();anim($("sb"))};const c=window.seg;window.seg=function(){c();radar()}}
+const tp=document.createElement("div");tp.id="tip";tp.setAttribute("role","tooltip");document.body.appendChild(tp);
+function tip(e,t){tp.textContent=t.dataset.tip;tp.style.opacity=1;const r=t.getBoundingClientRect();if(e.type=="focusin"){tp.style.left=r.left+r.width/2+"px";tp.style.top=r.top-34+"px"}else{tp.style.left=Math.min(e.clientX+14,innerWidth-270)+"px";tp.style.top=e.clientY+14+"px"}}
+document.addEventListener("mousemove",e=>{const t=e.target.closest&&e.target.closest("[data-tip]");if(t)tip(e,t);else tp.style.opacity=0;const c=e.target.closest&&e.target.closest(".panel");if(c){const r=c.getBoundingClientRect();c.style.setProperty("--mx",e.clientX-r.left+"px");c.style.setProperty("--my",e.clientY-r.top+"px")}});
+document.addEventListener("focusin",e=>{const t=e.target.closest&&e.target.closest("[data-tip]");if(t)tip(e,t)});document.addEventListener("focusout",()=>tp.style.opacity=0);
+oview();price();sup();ppu();radar();seg();mx();calc();sv();env();prst();const dtf=()=>$("dt").textContent="Dubai · "+new Date().toLocaleString("en-GB",{timeZone:"Asia/Dubai",weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});dtf();setInterval(dtf,30000);go(0);
+</script></body></html>
