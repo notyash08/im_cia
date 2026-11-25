@@ -1,0 +1,212 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tata Tea Gold | UAE Dashboard</title>
+<style>
+:root{--bg:#0b1020;--pan:#131a2e;--ln:#26304d;--fg:#eef2ff;--mu:#9aa6c7;--acc:#22d3ee;--mut:#5b6789;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:28px 20px 60px;display:flex;flex-direction:column;gap:18px}
+h1{margin:0;font-size:28px;font-weight:700}.sub{color:var(--mu);font-size:13px;margin:4px 0 0}.take{margin:10px 0 0;max-width:80ch;color:#d7def5}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.card{background:var(--pan);border:1px solid var(--ln);border-radius:14px;padding:18px;min-width:0}
+.kl{font-size:12.5px;color:var(--mu)}.kv{font-size:30px;font-weight:700;margin:6px 0 4px;font-variant-numeric:tabular-nums}.kn{font-size:12.5px;color:var(--mu)}
+.v-Expand{color:var(--ok)}.v-Adjust{color:var(--warn)}.v-Stop{color:var(--bad)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:14px}
+h2{font-size:17px;margin:0 0 2px}.cap{font-size:12.5px;color:var(--mu);margin:0 0 12px}
+.hb{display:grid;grid-template-columns:minmax(110px,170px) 1fr 54px;gap:10px;align-items:center;padding:6px 0}.hb span{font-size:13.5px;text-align:right}
+.tr{height:20px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden}.tr i{display:block;height:100%;border-radius:4px}.hb b{font-variant-numeric:tabular-nums}
+svg{width:100%;height:auto;display:block}svg text{fill:var(--mu);font-size:12px}svg .vl{fill:var(--fg);font-weight:600}.gl{stroke:rgba(255,255,255,.08)}.zl{stroke:rgba(255,255,255,.4);stroke-dasharray:4 4}
+#wts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:4px 16px;margin-top:12px}#wts label,#pin label{font-size:12.5px;color:var(--mu);display:block}
+input[type=range]{width:100%;accent-color:var(--acc)}#pin{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 12px;margin-top:12px}
+#pin input{width:100%;margin-top:3px;background:#0d1426;border:1px solid var(--ln);color:var(--fg);border-radius:8px;padding:7px 9px;font:inherit}
+#pin em{display:none;color:var(--bad);font-size:12px;font-style:normal}#pin .bad em{display:block}#pin .bad input{border-color:var(--bad)}
+.btn{background:transparent;border:1px solid var(--ln);color:var(--fg);border-radius:999px;padding:7px 14px;font:inherit;cursor:pointer}.btn:hover{border-color:var(--acc)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--ln);vertical-align:top}
+th{font-size:12px;color:var(--mu);font-weight:600}.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}tr.hl td{background:rgba(34,211,238,.07)}
+.pill{font-size:12px;border:1px solid var(--ln);border-radius:999px;padding:1px 8px}.pill.hi{border-color:var(--bad);color:var(--bad)}
+.tip{position:fixed;pointer-events:none;background:#1c2440;border:1px solid var(--ln);border-radius:8px;padding:6px 9px;font-size:12.5px;opacity:0;z-index:9;max-width:260px}
+details{color:var(--mu);font-size:13px}summary{cursor:pointer}:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+@media print{body{background:#fff;color:#000}.card{background:#fff;border-color:#bbb}.btn,input[type=range]{display:none}}
+</style></head><body><div class="wrap">
+<header class="head"><div><h1>Tata Tea Gold 250 g: UAE market dashboard</h1><p class="sub">Tata Consumer Products · loose black tea · Dubai pilot · shelf prices observed 21 Nov 2026</p><p class="take" id="take"></p></div><button class="btn" id="reset">Reset to baseline</button></header>
+<section class="kpis">
+<div class="card"><div class="kl">Gold shelf price per 100 g</div><div class="kv" id="k1"></div><div class="kn">250 g pack at AED 14.50 (observed)</div></div>
+<div class="card"><div class="kl">Gold premium vs Peacock, per 100 g</div><div class="kv" id="k2"></div><div class="kn">Peacock at AED 3.40 per 100 g</div></div>
+<div class="card"><div class="kl">India share of UAE retail-pack black tea imports, 2023</div><div class="kv" id="k3"></div><div class="kn" id="k3n"></div></div>
+<div class="card"><div class="kl" id="k4l"></div><div class="kv" id="k4"></div><div class="kn" id="k4n"></div></div>
+<div class="card"><div class="kl">Pilot sales, weeks 9–12 (scenario)</div><div class="kv" id="k5"></div><div class="kn" id="k5n"></div></div>
+</section>
+<section class="grid">
+<div class="card"><h2>Price per 100 g on the Dubai shelf</h2><p class="cap">AED per 100 g · Talabat, Al Adil, Al Qusais · 21 Nov 2026 · Gold highlighted</p><div id="cPrice"></div></div>
+<div class="card"><h2>India’s share is higher in retail packs</h2><p class="cap">India’s share of UAE tea import value · WITS (UN Comtrade)</p><div id="cTrade"></div></div>
+<div class="card"><h2>Target segment scores</h2><p class="cap">Weighted analyst score out of 5 · move the weights to test the ranking</p><div id="cSeg"></div><div id="wts"></div></div>
+<div class="card"><h2>Pilot cumulative contribution</h2><p class="cap" id="pcap"></p><div id="cPilot"></div><div id="pin"></div></div>
+</section>
+<section class="card"><h2>Shelf price comparison</h2><p class="cap">Rival pack prices are derived from the listed price per 100 g. Stock status was recorded only for Gold.</p><div class="tw"><table><thead><tr><th>Product</th><th class="n">Pack (g)</th><th class="n">AED / pack</th><th>Pack price</th><th class="n">AED / 100 g</th><th class="n">Gold premium</th><th>Tata brand</th><th>Stock</th></tr></thead><tbody id="tShelf"></tbody></table></div></section>
+<section class="card"><h2>Pilot risk register</h2><p class="cap">Likelihood and severity are analyst ratings.</p><div class="tw"><table><thead><tr><th>Risk</th><th>Trigger</th><th>Impact</th><th>Mitigation</th><th>Owner</th><th>Likelihood</th><th>Severity</th></tr></thead><tbody id="tRisk"></tbody></table></div></section>
+<details><summary>About these numbers</summary><p>Shelf prices: Talabat, one branch, 21 Nov 2026; rival pack prices derived. Trade: WITS (UN Comtrade) UAE imports, HS 0902 and HS 090230. Segment scores and risk ratings are analyst judgements. Pilot figures are a hypothetical scenario (25 stores, 12 weeks). Verdict: Expand if weeks 9–12 sales ≥ 8 packs per store per week, repeat ≥ 30% and contribution &gt; 0; Stop below 4 packs or 15% repeat; otherwise Adjust.</p></details>
+</div><div class="tip" id="tip"></div>
+<script>
+/* ================= SINGLE SHARED DATASET ================= */
+const D={};
+/* ---- Evidence records (drawer) ---- */
+D.EV={
+ talabat:{t:'Talabat retail shelf observation',type:'obs',pub:'Talabat UAE (grocery: Al Adil, Al Qusais 2 branch)',ds:'Tea listing page: Tata Tea Gold 250 g (AED 14.50); AED-per-100 g prices for Peacock 250 g, Lipton Yellow Label 800 g, Tata Tea Premium 400 g, Tata Tea Agni 250 g',date:'Observed 21 Nov 2026',unit:'AED per pack; AED per 100 g as listed (incl. 5% VAT)',geo:'Al Qusais, Dubai',url:'https://www.talabat.com/uae/grocery/38717/al-adil-alqusais-2/coffee-tea/tea?aid=1260',calc:'Gold per 100 g = 14.50 ÷ 250 × 100 = 5.80. Premium = Gold ÷ rival − 1, e.g. 5.80 ÷ 3.40 − 1 = 70.6%. Difference = 5.80 − 3.40 = AED 2.40 per 100 g. Rival pack prices = per-100 g price × grams ÷ 100 (derived, not observed).',lim:'One branch on one day. Gold’s stock indicator read zero (listed, not necessarily available); stock status for the other four products was not recorded. Rival pack prices are derived from per-100 g prices. Prices may include promotions.'},
+ wb_pop:{t:'UAE population (World Bank)',type:'pub',pub:'World Bank, World Development Indicators',ds:'SP.POP.TOTL – Population, total, United Arab Emirates',date:'Last updated 8 Oct 2026',unit:'Persons',geo:'UAE (national)',url:'https://data.worldbank.org/indicator/SP.POP.TOTL?locations=AE',calc:'2025 = 11,513,149 (shown as 11.51 million). 2024 = 10,986,400. Growth 2024→2025 = 11,513,149 ÷ 10,986,400 − 1 = 4.8%.',lim:'Modelled annual estimate. The UAE statistics centre (FCSC) population register reports a different figure (12.06 million for 2025) because it counts residents differently.'},
+ wb_gdp:{t:'UAE GDP per capita (World Bank)',type:'pub',pub:'World Bank, World Development Indicators',ds:'NY.GDP.PCAP.CD – GDP per capita (current US$), United Arab Emirates',date:'Last updated 8 Oct 2026',unit:'Current US$ per person',geo:'UAE (national)',url:'https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=AE',calc:'2024 = US$50,273.51 (2023: 49,850.69; 2022: 50,759.76).',lim:'National average; income varies widely between resident groups. No 2025 value published yet.'},
+ embassy:{t:'Indian community in the UAE',type:'pub',pub:'Embassy of India, Abu Dhabi',ds:'“Indian Community in UAE” page',date:'Page updated 10 Nov 2026 (as checked in the earlier analysis)',unit:'Persons; share of residents',geo:'UAE (national)',url:'https://www.indembassyuae.gov.in/page/indian-community-in-uae/',calc:'Page states “over 4.5 million” Indians and “roughly about 35 percent” of the population. The earlier analysis used 4.3 million (2024); 4.3 ÷ 11.51 = 37.4%, so the 35% share and the head-count are not from one calculation.',lim:'Embassy estimate with no reference year or method. Treat as an estimate, not a census figure.'},
+ dubai_pop:{t:'Dubai population (emirate level)',type:'pub',pub:'Dubai Statistics Centre population clock, reported by Gulf News',ds:'Dubai resident population',date:'8 Sep 2025',unit:'Persons',geo:'Emirate of Dubai',url:'https://gulfnews.com/uae/government/uae-population-hits-113-million-in-2024-1.500261527',calc:'4,006,656 residents on 8 Sep 2025 (first time above 4 million).',lim:'Reported via a newspaper article rather than read directly from the Dubai Statistics Centre site. Not broken down by nationality.'},
+ dubai_indians:{t:'Indian residents concentrated in Dubai',type:'pub',pub:'Indian Ambassador to the UAE, reported by Gulf News',ds:'Interview: Indian expatriate population 4.36 million; “more than half” in Dubai',date:'2024',unit:'Persons (share qualitative)',geo:'Dubai / UAE',url:'https://gulfnews.com/world/asia/india/indian-expat-population-in-uae-doubles-to-436-million-more-than-half-live-in-dubai-envoys-1.500129223',calc:'No calculation: “more than half” is a qualitative statement.',lim:'No exact Dubai count; differs slightly from the Embassy page’s “over 4.5 million”.'},
+ w0902_2022:{t:'UAE tea imports by supplier, 2022 (HS 0902)',type:'pub',pub:'World Bank WITS, from UN Comtrade',ds:'United Arab Emirates imports, HS 0902 Tea, all partners, 2022',date:'Data year 2022 (checked 25 Nov 2026)',unit:'US$ thousand (shown as US$ million)',geo:'UAE (national, border trade)',url:'https://wits.worldbank.org/trade/comtrade/en/country/ARE/year/2022/tradeflow/Imports/partner/ALL/product/0902',calc:'World 260,802.77; India 78,675.06; Kenya 103,523.49; Sri Lanka 34,869.90. India share = 78.68 ÷ 260.80 = 30.2%. Other = World − India − Kenya − Sri Lanka.',lim:'Records goods crossing the border, including bulk blending tea and tea later re-exported; not household purchases.'},
+ w0902_2023:{t:'UAE tea imports by supplier, 2023 (HS 0902)',type:'pub',pub:'World Bank WITS, from UN Comtrade',ds:'United Arab Emirates imports, HS 0902 Tea, all partners, 2023',date:'Data year 2023 (checked 25 Nov 2026)',unit:'US$ thousand (shown as US$ million)',geo:'UAE (national, border trade)',url:'https://wits.worldbank.org/trade/comtrade/en/country/ARE/year/2023/tradeflow/Imports/partner/ALL/product/0902',calc:'World 221,009.60; India 83,912.73; Kenya 70,020.11; Sri Lanka 26,002.10. India share = 83.91 ÷ 221.01 = 38.0%.',lim:'As for 2022. The earlier dashboard’s Kenya ≈70 and Sri Lanka 26.00 (TrendEconomy) are now confirmed in WITS.'},
+ w090230_2022:{t:'UAE black tea in packs ≤3 kg, 2022 (HS 090230)',type:'pub',pub:'World Bank WITS, from UN Comtrade',ds:'United Arab Emirates imports, HS 090230 black tea in immediate packings ≤3 kg, 2022',date:'Data year 2022 (checked 25 Nov 2026)',unit:'US$ thousand (shown as US$ million)',geo:'UAE (national)',url:'https://wits.worldbank.org/trade/comtrade/en/country/ARE/year/2022/tradeflow/Imports/partner/ALL/product/090230',calc:'World 40,012.92; India 16,207.15; Sri Lanka 15,488.17; Kenya 415.47. India share = 16.21 ÷ 40.01 = 40.5%.',lim:'Includes tea bags and loose packs of any size up to 3 kg; a 250 g loose pack cannot be isolated.'},
+ w090230_2023:{t:'UAE black tea in packs ≤3 kg, 2023 (HS 090230)',type:'pub',pub:'World Bank WITS, from UN Comtrade',ds:'United Arab Emirates imports, HS 090230 black tea in immediate packings ≤3 kg, 2023',date:'Data year 2023 (checked 25 Nov 2026)',unit:'US$ thousand (shown as US$ million)',geo:'UAE (national)',url:'https://wits.worldbank.org/trade/comtrade/en/country/ARE/year/2023/tradeflow/Imports/partner/ALL/product/090230',calc:'World 39,302.60; India 18,328.21; Sri Lanka 13,322.18; Kenya 157.07. India share = 18.33 ÷ 39.30 = 46.6%. Category share of all tea = 39.30 ÷ 221.01 = 17.8%.',lim:'As for 2022.'},
+ cepa:{t:'India–UAE CEPA tariff coverage',type:'pub',pub:'Government of India (Noida SEZ) CEPA FAQ; UAE Ministry of Economy CEPA tool',ds:'CEPA FAQ: UAE eliminates duties on 97% of tariff lines (99% of Indian exports by value)',date:'Agreement in force May 2022',unit:'% of tariff lines',geo:'UAE–India',url:'https://www.nsez.gov.in/Resources/Trade/FAQs%20on%20CEPA.pdf',calc:'No calculation. Planning assumption: 5% standard duty until the tariff line for Gold is confirmed.',lim:'Missing: the exact GCC tariff line, staging category and rules-of-origin outcome for Tata Tea Gold. Check: https://www.moet.gov.ae/en/cepa_india'},
+ dm:{t:'Dubai Municipality item registration & label assessment',type:'pub',pub:'Dubai Municipality',ds:'Item Registration System (IRS) user guide',date:'Dec 2023',unit:'Working days',geo:'Dubai',url:'https://www.dm.gov.ae/wp-content/uploads/2023/12/IRS-eng.pdf',calc:'Guide lists item registration ≈1 working day; registration plus label assessment ≈5 working days.',lim:'Service times are targets, not guarantees; distributor must hold the trade licence.'},
+ label:{t:'UAE food labelling requirements',type:'pub',pub:'U.S. International Trade Administration, Country Commercial Guide',ds:'United Arab Emirates – Labeling/Marking Requirements',date:'n.d. (accessed 25 Nov 2026)',unit:'—',geo:'UAE',url:'https://www.trade.gov/knowledge-product/united-arab-emirates-labelingmarking-requirements',calc:'Arabic or Arabic/English labels; Arabic stickers accepted; minimum fields include product name, ingredients, country of origin.',lim:'Secondary government guide, not the UAE standard itself.'},
+ vat:{t:'UAE VAT',type:'pub',pub:'UAE Government portal (u.ae)',ds:'Value Added Tax (VAT)',date:'In force since 1 Jan 2018',unit:'%',geo:'UAE',url:'https://u.ae/en/information-and-services/finance-and-investment/taxation/vat/valueaddedtaxvat',calc:'Standard rate 5%. Gold ex-VAT shelf price = 14.50 ÷ 1.05 = AED 13.81.',lim:'—'},
+ heat:{t:'UAE summer temperatures',type:'pub',pub:'The National, citing the National Centre of Meteorology',ds:'“UAE weather: Temperatures to hit 48°C this week”',date:'11 Aug 2025',unit:'°C',geo:'UAE',url:'https://www.thenationalnews.com/news/uae/2025/08/11/uae-temperature-summer-weather/',calc:'Dubai forecast highs around 44–45°C; national record 51.8°C on 1 Aug 2025.',lim:'Weather news, not storage research. The effect of heat on loose tea quality was not researched and is an assumption.'},
+ desert:{t:'Third-party online listings of Gold 250 g',type:'obs',pub:'Desertcart UAE (cross-border marketplace)',ds:'Tata Tea Gold 250 g listings from third-party sellers at AED 84, 108 and 21',date:'Observed in the earlier analysis (date not recorded)',unit:'AED per listing',geo:'UAE (online)',url:'',calc:'No calculation.',lim:'Missing: listing URLs, observation date, seller names, and confirmation that the item is the 250 g Gold pack. Treat as unverified.'},
+ position:{t:'Product claim used in positioning',type:'gap',pub:'Tata Tea Gold product description (as quoted in the earlier analysis)',ds:'Claim: “blends valley-grown Assam teas with selected long leaves”',date:'Not recorded',unit:'—',geo:'—',url:'',calc:'No calculation.',lim:'Missing: the URL or pack photograph that the claim was taken from. Verify the wording on the UAE pack before using it in promotion.'},
+ scores:{t:'Segment scores and weights',type:'an',pub:'Analyst judgment (this study)',ds:'Five criteria × three segments, scored 1–5; baseline weights 30/25/20/15/10',date:'Nov 2026',unit:'Score out of 5',geo:'Dubai',url:'',calc:'Total = Σ score × weight ÷ Σ weights. Baseline: households 4.55, karak cafés 3.55, tea-bag shoppers 3.15. Sensitivity: repeat weight w, other weights × (1 − w) ÷ 0.8. At w = 60% households and cafés both score 4.275.',lim:'Scores are judgments informed by the evidence in this study, not survey results.'},
+ pilot:{t:'Pilot model assumptions',type:'sc',pub:'Analyst scenario (this study)',ds:'25 stores × 12 weeks; units per store per week 4 / 6 / 8 by four-week period; net receipts AED 9.00; variable cost AED 6.00; fixed cost AED 3,000; repeat 30%',date:'Nov 2026',unit:'Packs; AED',geo:'Dubai',url:'',calc:'Packs per period = 25 × 4 × units. kg = packs × 0.25. Contribution per pack = net receipts − variable cost. Break-even packs = ⌈fixed cost ÷ contribution⌉.',lim:'Hypothetical inputs, not sales data. Net receipts (after distributor and retailer margins and VAT) are an assumption; the AED 14.50 shelf price is not Tata’s receipt. Listing fees unknown.'},
+ ratings:{t:'Risk and force ratings',type:'an',pub:'Analyst judgment (this study)',ds:'Likelihood and impact (Low / Medium / High); Five Forces intensity',date:'Nov 2026',unit:'Ordinal rating',geo:'Dubai pilot',url:'',calc:'—',lim:'Ratings are judgments; factual triggers link to their own records.'},
+ ai:{t:'AI-method note',type:'an',pub:'This study',ds:'How AI assistance was used and checked',date:'25 Nov 2026',unit:'—',geo:'—',url:'https://wits.worldbank.org/trade/comtrade/en/country/ARE/year/2023/tradeflow/Imports/partner/ALL/product/090230',calc:'Example check: the question “Is India as important in retail-size black tea as in all tea?” was answered by opening the WITS HS 090230 page for 2023. India = US$18.33m of US$39.30m (46.6%), compared with 38.0% of all HS 0902 tea. The same check found WITS values for Kenya and Sri Lanka in 2022, which the earlier dashboard had marked as unverified.',lim:'AI drafted structure, segment criteria and text; every figure was re-opened at its source. AI can still misread tables, so each record shows its URL for checking.'}
+};
+const TYPE={obs:['t-obs','Retailer observation'],pub:['t-pub','Published fact'],an:['t-an','Analyst judgment'],as:['t-as','Assumption to test'],sc:['t-sc','Scenario'],gap:['t-gap','Unverified'],der:['t-der','Derived']};
+
+/* ---- National & emirate indicators ---- */
+D.NAT=[
+ {k:'UAE population',v:'11.51',u:'million people',y:'2025',ev:'wb_pop'},
+ {k:'GDP per capita',v:'50,273.51',u:'current US$',y:'2024',ev:'wb_gdp'},
+ {k:'India’s share of UAE tea imports',v:'38.0',u:'% of HS 0902 import value',y:'2023',ev:'w0902_2023'},
+ {k:'Indian community',v:'over 4.5',u:'million people (estimate, ~35% of residents)',y:'no reference year',ev:'embassy'}];
+D.EMI=[
+ {k:'Dubai population',v:'4,006,656',u:'residents',y:'Sep 2025',ev:'dubai_pop'},
+ {k:'Indian residents in Dubai',v:'more than half',u:'of 4.36 million (qualitative)',y:'2024',ev:'dubai_indians'},
+ {k:'Documented grocery channel',v:'Talabat · Al Adil',u:'Al Qusais branch lists Gold 250 g at AED 14.50',y:'21 Nov 2026',ev:'talabat'}];
+
+/* ---- Retail observations (dated; never changed by trade filters) ---- */
+D.OBS={date:'21 Nov 2026',outlet:'Talabat · Al Adil, Al Qusais 2, Dubai'};
+D.P=[
+ {id:'gold',n:'Tata Tea Gold',g:250,p100:5.80,pack:14.50,packObs:true,own:true,stock:'Listed; stock indicator read 0',col:'#22d3ee',band:'#0e7490'},
+ {id:'peacock',n:'Peacock',g:250,p100:3.40,pack:8.50,packObs:false,own:false,stock:'Not recorded',col:'#e5484d',band:'#7a1f22'},
+ {id:'lipton',n:'Lipton Yellow Label',g:800,p100:5.31,pack:42.48,packObs:false,own:false,stock:'Not recorded',col:'#fbbf24',band:'#b91c1c'},
+ {id:'premium',n:'Tata Tea Premium',g:400,p100:4.88,pack:19.52,packObs:false,own:true,stock:'Not recorded',col:'#f97316',band:'#7c2d12'},
+ {id:'agni',n:'Tata Tea Agni',g:250,p100:3.20,pack:8.00,packObs:false,own:true,stock:'Not recorded',col:'#ef4444',band:'#14532d'}];
+
+/* ---- Trade (scoped to the trade section only) ---- */
+D.TRADE={
+ 2022:{all:{World:260.80,India:78.68,Kenya:103.52,'Sri Lanka':34.87,ev:'w0902_2022'},pk:{World:40.01,India:16.21,Kenya:0.42,'Sri Lanka':15.49,ev:'w090230_2022'}},
+ 2023:{all:{World:221.01,India:83.91,Kenya:70.02,'Sri Lanka':26.00,ev:'w0902_2023'},pk:{World:39.30,India:18.33,Kenya:0.16,'Sri Lanka':13.32,ev:'w090230_2023'}}};
+
+/* ---- Competitive forces (analyst) ---- */
+D.FORCES=[
+ {n:'Retailer bargaining power',lv:'High',why:'Talabat/grocers control listing, price display and stock. Gold was listed but its stock indicator read 0 on 21 Nov 2026.',ev:'talabat'},
+ {n:'Rivalry & price pressure',lv:'High',why:'Peacock (AED 3.40) and Tata’s own Agni (AED 3.20) per 100 g sit well below Gold (AED 5.80).',ev:'talabat'},
+ {n:'Threat of substitutes',lv:'High',why:'Tea bags, ready karak from cafés and Tata’s own Premium/Agni packs all meet the same need.',ev:'scores'},
+ {n:'Buyer (household) power',lv:'Medium',why:'Switching costs nothing; each purchase is small, so price comparisons per 100 g matter.',ev:'scores'},
+ {n:'Threat of new entrants',lv:'Medium',why:'Several supplier countries already ship retail-size black tea to the UAE (India 46.6%, Sri Lanka 33.9% of HS 090230, 2023).',ev:'w090230_2023'}];
+
+/* ---- PESTEL ---- */
+D.PE=[
+ {k:'Political',ev:'cepa',fl:['price'],find:'India–UAE CEPA in force since May 2022; the UAE removes duties on 97% of tariff lines. The tariff line and eligibility for Gold are not yet confirmed.',imp:'Landed cost, and therefore contribution per pack, is uncertain.',resp:'Confirm the GCC tariff line and certificate of origin with the distributor; plan for 5% duty meanwhile.'},
+ {k:'Economic',ev:'talabat',fl:['price'],find:'Gold costs AED 5.80 per 100 g against Peacock 3.40 (+70.6%) and Agni 3.20 (+81.3%). 5% VAT is included in shelf prices.',imp:'Gold must justify a large premium, including against Tata’s own cheaper brands.',resp:'Run a controlled price test in the pilot before committing to a national price.'},
+ {k:'Social',ev:'embassy',fl:['distribution'],find:'The Indian community is “over 4.5 million”, roughly 35% of residents (Embassy estimate, no reference year). The daily loose-chai habit is assumed, not measured.',imp:'There is a clear first audience, but its size and buying frequency are unknown.',resp:'Pick pilot stores in Dubai neighbourhoods with many Indian residents; measure repeat purchase.'},
+ {k:'Technological',ev:'desert',fl:['price','distribution'],find:'Gold is listed on Talabat’s quick-commerce grocery app; third-party Desertcart listings at AED 84, 108 and 21 are unverified.',imp:'Online listings can undercut or confuse the reference price.',resp:'Set a recommended price, list through an authorised seller, monitor online prices weekly.'},
+ {k:'Environmental',ev:'heat',fl:['packaging','distribution'],find:'Dubai summer highs reach the mid-40s °C. The effect of warm storage on loose-tea quality was not researched (assumption).',imp:'Possible aroma and quality loss in un-air-conditioned storage or transit.',resp:'Agree cool, dry storage with the distributor; avoid starting the pilot in peak summer.'},
+ {k:'Legal',ev:'dm',fl:['timing','packaging'],find:'Dubai Municipality item registration and label assessment are required; Arabic product name, ingredients and origin must appear on the label.',imp:'No sale before approval; label changes cost time and money.',resp:'Distributor files registration and Arabic sticker first; pilot start is gated on approval.'}];
+
+/* ---- Segments ---- */
+D.SG=['Home-brewing households','Karak cafés','Tea-bag shoppers'];
+D.SGS=['Households','Cafés','Tea-bag'];
+D.CR=['Product fit','Ease of reaching buyers','Repeat-purchase potential','Price fit','Differentiation'];
+D.BW=[30,25,20,15,10];
+D.SC=[[5,4,2],[5,3,4],[4,5,4],[4,2,3],[4,3,3]];
+D.SEGD=[
+ {occ:'Daily milk chai brewed at home',crit:'Familiar brand, rich aromatic cup, pack lasts 2–4 weeks',ch:'Neighbourhood grocers, supermarkets, Talabat',fit:'Strong: loose black tea is what they brew',a:[1,1,1,0]},
+ {occ:'All-day strong karak tea service',crit:'Cost per kg, consistent strength, supply reliability',ch:'Direct sales visits or cash-and-carry wholesalers',fit:'Medium: loose leaf suits karak, but cafés buy on price and larger packs',a:[1,1,1,1]},
+ {occ:'Quick single cup at home or work',crit:'Speed, convenience, no mess',ch:'Supermarkets and online grocery',fit:'Weak: Gold 250 g is loose tea; a tea-bag Gold was not assessed',a:[1,1,1,0]}];
+
+/* ---- Positioning ---- */
+D.POS={who:'Indian expatriate households in Dubai who brew loose-leaf milk chai at home every day.',benefit:'A rich, aromatic everyday cup from a brand they already know — worth paying a little more for than value loose teas.',evid:'Tata’s description: valley-grown Assam teas blended with selected long leaves (claim to verify on the UAE pack).',alt:'Value loose tea (Peacock, Tata Agni), larger family packs (Lipton Yellow Label 800 g, Tata Premium 400 g), tea bags and café karak.'};
+
+/* ---- Routes ---- */
+D.ROUTES=[
+ {n:'Distributor-led grocery expansion',cost:'Medium — distributor margin; listing fees unknown',ctrl:'Medium — price and shelf through the distributor',acc:'High — neighbourhood grocers, supermarkets, Talabat',data:'Medium — only if weekly sell-out reporting is written into the contract',rec:true},
+ {n:'Marketplace selling (Talabat, noon, Amazon.ae)',cost:'Low–medium — commission per order',ctrl:'High on listing content; low over third-party resellers',acc:'Medium — online shoppers only',data:'High — order and repeat data from the seller dashboard'},
+ {n:'Direct key-account listing with one hypermarket chain',cost:'High — listing fees, own logistics',ctrl:'Medium — chain sets promotions and space',acc:'Medium — only that chain’s shoppers',data:'Medium–high — store sales data if negotiated'}];
+
+/* ---- Marketing mix (pilot decisions) ---- */
+D.MIX=[
+ {p:'Product',d:'Sell the existing 250 g Gold pack with an approved Arabic label sticker; no reformulation.',m:'Label approved before week 1; share of 25 stores with Gold on shelf each week (target 100%); stock-outs logged.'},
+ {p:'Price',d:'Matched-store test: the same 250 g pack at AED 14.50 in half the stores and at a lower test price (e.g. AED 12.95) in similar stores (size, neighbourhood), with identical display and no promotion in either group.',m:'Units per store per week and six-week repeat at each price; the difference shows whether the premium costs volume.'},
+ {p:'Place',d:'25 grocery stores and supermarkets in Dubai neighbourhoods with many Indian residents, served by one distributor; keep the Talabat listing active.',m:'Weekly sell-out per store from distributor reports; Talabat orders as a secondary read.'},
+ {p:'Promotion',d:'In-store tasting on weekends plus a community/festival push (e.g. around Diwali); no price discounts during the price test.',m:'Tasting-to-purchase conversion; six-week repeat rate via a loyalty or receipt-upload offer.'}];
+
+/* ---- SWOT / TOWS ---- */
+D.SWOT={S:['Trusted Tata brand with Indian residents (assumed, to test)','Gold already listed at a Dubai grocer on Talabat','Ladder of cheaper Tata brands (Premium, Agni) on the same shelf'],
+ W:['70.6% dearer per 100 g than Peacock','Stock indicator read 0 at the observed outlet','No UAE sales or repeat data'],
+ O:['India supplies 46.6% of UAE black tea in packs ≤3 kg (2023)','More than half of UAE Indian residents live in Dubai','CEPA may lower landed cost'],
+ T:['Cheaper rivals and Tata’s own Agni can cannibalise Gold','Retailers control listing and space','Unverified online prices (AED 21–108)','Registration and label approval timing']};
+D.TOWS={SO:'Lead the pilot in Dubai neighbourhoods with many Indian residents, using the Tata name at shelf and in tastings.',ST:'Place Gold above Agni on the shelf as the “trade-up” Tata, and set a recommended online price.',WO:'Use the matched-store price test to learn whether a lower price lifts volume enough to pay back.',WT:'Write weekly stock and sell-out reporting into the distributor contract before launch.'};
+
+/* ---- Risk register (pilot) ---- */
+D.RISKS=[
+ {r:'Registration or label approval delayed',trig:'No Dubai Municipality approval two weeks before planned week 1',imp:'Trial start slips; promotion dates missed',mit:'File registration and Arabic sticker first; launch date set only after approval',own:'Distributor regulatory lead',l:'Medium',i:'High',ev:'dm'},
+ {r:'Premium rejected by shoppers',trig:'Weeks 9–12 below 8 units per store per week',imp:'Adjust or Stop verdict',mit:'Matched-store price test from week 5; review pack size',own:'Tata brand manager',l:'Medium',i:'High',ev:'talabat'},
+ {r:'Listed but not on shelf',trig:'Store audit finds no facing, or app stock indicator at 0',imp:'Lost sales understate demand',mit:'Weekly stock audit; replenishment within 48 hours',own:'Distributor sales team',l:'Medium',i:'Medium',ev:'talabat'},
+ {r:'Unauthorised online prices',trig:'Listings outside AED 12.95–14.50 for the 250 g pack',imp:'Confused reference price; brand damage',mit:'Authorised seller only; weekly price scan',own:'Tata e-commerce lead',l:'Medium',i:'Low',ev:'desert'},
+ {r:'Margin squeezed by fees or duty',trig:'Listing fees or 5% duty make contribution per pack ≤ 0',imp:'Pilot loses money even if volume is good',mit:'Confirm tariff line and listing fees before signing',own:'Tata finance',l:'Medium',i:'Medium',ev:'cepa'},
+ {r:'Heat damage in storage',trig:'Warehouse or van above agreed temperature',imp:'Quality complaints; returns',mit:'Cool, dry storage clause; avoid peak-summer start',own:'Distributor logistics',l:'Low',i:'Medium',ev:'heat'}];
+
+/* ---- Pilot ---- */
+D.BASE={u1:4,u2:6,u3:8,rp:30,nt:9,vc:6,fx:3000};
+D.STORES=25;D.WK=4;D.KG=0.25;
+D.ROAD=[
+ {n:'Preparation',w:'Weeks −8 to 0',own:'Tata export team + UAE distributor',met:'Dubai Municipality registration and Arabic label approved; 25 stores signed; reporting clause agreed',dec:'Go / no-go for week 1. No sale before approval.'},
+ {n:'Trial',w:'Weeks 1–12',own:'Distributor sales team (data) · Tata brand manager (analysis)',met:'Units per store per week in three four-week periods; six-week repeat; contribution after fixed cost',dec:'Verdict from weeks 9–12: Expand, Adjust or Stop.'},
+ {n:'Retest',w:'Weeks 13–24 (only after Adjust)',own:'Tata brand manager',met:'Same thresholds after changing price, pack or store mix',dec:'Expand if thresholds met; Stop if contribution is still ≤ 0.'},
+ {n:'Expansion review',w:'After week 12 or 24',own:'Tata Consumer Products international leadership',met:'Expand criteria met; listing fees and duty confirmed',dec:'Scale to more Dubai stores, then other emirates.'}];
+
+const $=s=>document.querySelector(s),fc=n=>Math.round(n).toLocaleString('en-US'),f2=x=>(+x).toFixed(2),f1=x=>(+x).toFixed(1);
+const G=D.P.find(p=>p.id==='gold'),prem=p=>(G.p100/p.p100-1)*100;
+const share=(y,k)=>D.TRADE[y][k].India/D.TRADE[y][k].World*100;
+const SEG=['households','cafés','tea-bag'];
+let W=[...D.BW],P={...D.BASE};
+const tot=w=>{const s=w.reduce((a,b)=>a+b,0);return [0,1,2].map(j=>D.SC.reduce((a,r,i)=>a+r[j]*w[i]/s,0))};
+function plan(p){const c=p.nt-p.vc,u=[p.u1,p.u2,p.u3],pk=u.map(x=>x*D.STORES*D.WK),t=pk[0]+pk[1]+pk[2];
+ const v=(p.u3<4||p.rp<15)?'Stop':(p.u3>=8&&p.rp>=30&&c>0)?'Expand':'Adjust';return{c,pk,t,w912:pk[2],kg:pk[2]*D.KG,net:t*c-p.fx,be:c>0?Math.ceil(p.fx/c):null,v}}
+const tip=$('#tip');function hook(root){root.querySelectorAll('[data-tip]').forEach(e=>{e.onmousemove=ev=>{tip.textContent=e.dataset.tip;tip.style.opacity=1;tip.style.left=Math.min(ev.clientX+14,innerWidth-260)+'px';tip.style.top=ev.clientY+14+'px'};e.onmouseleave=()=>tip.style.opacity=0})}
+function hbar(el,rows,max){el.innerHTML=rows.map(r=>`<div class="hb" data-tip="${r.tip}"><span>${r.l}</span><div class="tr"><i style="width:${r.v/max*100}%;background:${r.c||'var(--mut)'}"></i></div><b>${r.t}</b></div>`).join('');hook(el)}
+function kpis(){const pk=plan(P),t=tot(W),pea=D.P.find(p=>p.id==='peacock');
+ $('#k1').textContent='AED '+f2(G.p100);$('#k2').textContent='+'+f1(prem(pea))+'%';$('#k3').textContent=f1(share(2023,'pk'))+'%';
+ $('#k3n').textContent='vs '+f1(share(2023,'all'))+'% of all tea imports';
+ const o=[0,1,2].sort((a,b)=>t[b]-t[a]);$('#k4').textContent=f2(t[o[0]])+' / 5';$('#k4l').textContent='Top target: '+D.SG[o[0]].toLowerCase();
+ $('#k4n').textContent=o.slice(1).map(j=>D.SG[j]+' '+f2(t[j])).join(' · ');
+ $('#k5').textContent=fc(pk.w912)+' packs';$('#k5n').innerHTML=`${fc(pk.kg)} kg across 25 stores · verdict <b class="v-${pk.v}">${pk.v}</b>`;
+ $('#take').innerHTML=`Gold sells at <b>${f1(prem(pea))}%</b> more per 100 g than Peacock, while India supplies <b>${f1(share(2023,'pk'))}%</b> of UAE retail-pack black tea imports. ${D.SG[o[0]]} score highest as the first target, so a 25-store Dubai pilot tests whether they pay that premium.`}
+function prices(){hbar($('#cPrice'),D.P.slice().sort((a,b)=>b.p100-a.p100).map(p=>({l:p.n,v:p.p100,t:f2(p.p100),c:p.id==='gold'?'var(--acc)':'',tip:`${p.n} ${p.g} g: AED ${f2(p.p100)} per 100 g`})),6.2)}
+function trade(){const el=$('#cTrade'),w=520,h=240,y=v=>200-v/60*170;let s=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="India share of UAE tea imports, all tea vs packs up to 3 kg, 2022 and 2023">`;
+ [0,20,40,60].forEach(v=>s+=`<line x1="44" x2="${w-10}" y1="${y(v)}" y2="${y(v)}" class="gl"/><text x="38" y="${y(v)+4}" text-anchor="end">${v}%</text>`);
+ ['2022','2023'].forEach((yr,i)=>{const x0=90+i*220;[['all','All tea (HS 0902)','var(--mut)'],['pk','Packs ≤3 kg (HS 090230)','var(--acc)']].forEach(([k,n,c],j)=>{const v=share(yr,k),x=x0+j*80;
+  s+=`<rect x="${x}" y="${y(v)}" width="64" height="${200-y(v)}" rx="4" fill="${c}" data-tip="${yr} · ${n}: ${f1(v)}% (US$${f2(D.TRADE[yr][k].India)}m of US$${f2(D.TRADE[yr][k].World)}m)"/><text x="${x+32}" y="${y(v)-7}" text-anchor="middle" class="vl">${f1(v)}%</text>`});s+=`<text x="${x0+72}" y="224" text-anchor="middle">${yr}</text>`});
+ s+=`<rect x="50" y="4" width="11" height="11" rx="2" fill="var(--mut)"/><text x="66" y="14">All tea</text><rect x="140" y="4" width="11" height="11" rx="2" fill="var(--acc)"/><text x="156" y="14">Packs up to 3 kg</text></svg>`;el.innerHTML=s;hook(el)}
+function segs(){const t=tot(W),o=[0,1,2].sort((a,b)=>t[b]-t[a]);hbar($('#cSeg'),o.map((j,k)=>({l:D.SG[j],v:t[j],t:f2(t[j]),c:k===0?'var(--acc)':'',tip:`${D.SG[j]}: ${f2(t[j])} of 5`})),5);
+ const s=W.reduce((a,b)=>a+b,0);$('#wts').innerHTML=D.CR.map((c,i)=>`<label>${c} <b>${s?f1(W[i]/s*100):0}%</b><input type="range" min="0" max="100" value="${W[i]}" data-w="${i}" aria-label="${c} weight"></label>`).join('');
+ document.querySelectorAll('[data-w]').forEach(r=>r.oninput=()=>{W[+r.dataset.w]=+r.value;if(W.every(x=>!x))W[+r.dataset.w]=1;segs();kpis();setTimeout(()=>{const n=document.querySelector(`[data-w="${r.dataset.w}"]`);n&&n.focus()})})}
+function pilot(){const pk=plan(P),c=pk.c;let cum=-P.fx;const pts=[[0,cum]];for(let wk=1;wk<=12;wk++){cum+=[P.u1,P.u2,P.u3][Math.floor((wk-1)/4)]*D.STORES*c;pts.push([wk,cum])}
+ const lo=Math.min(0,...pts.map(p=>p[1])),hi=Math.max(0,...pts.map(p=>p[1])),sp=(hi-lo)||1,w=520,h=240,X=k=>60+k*(w-80)/12,Y=v=>200-(v-lo)/sp*180;
+ let s=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Cumulative pilot contribution by week, ending at AED ${fc(cum)}">`;
+ [...new Set([lo,0,hi])].forEach(v=>s+=`<line x1="56" x2="${w-10}" y1="${Y(v)}" y2="${Y(v)}" class="gl"/><text x="50" y="${Y(v)+4}" text-anchor="end">${fc(v)}</text>`);
+ s+=`<line x1="56" x2="${w-10}" y1="${Y(0)}" y2="${Y(0)}" class="zl"/><text x="${w-12}" y="${Y(0)-6}" text-anchor="end">Break-even</text>`;
+ [0,4,8,12].forEach(k=>s+=`<text x="${X(k)}" y="224" text-anchor="middle">Wk ${k}</text>`);
+ s+=`<polyline points="${pts.map(p=>X(p[0])+','+Y(p[1])).join(' ')}" fill="none" stroke="var(--acc)" stroke-width="2.5"/>`+pts.map(p=>`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="4.5" fill="${p[1]<0?'var(--bad)':'var(--acc)'}" data-tip="Week ${p[0]}: AED ${fc(p[1])}"/>`).join('')+`<text x="${X(12)}" y="${Y(cum)-10}" text-anchor="end" class="vl">AED ${fc(cum)}</text></svg>`;
+ $('#cPilot').innerHTML=s;hook($('#cPilot'));
+ $('#pcap').textContent=`Scenario: contribution AED ${f2(c)} per pack after AED ${f2(P.nt)} net receipts and AED ${f2(P.vc)} variable cost; fixed cost AED ${fc(P.fx)}; break-even ${pk.be==null?'not reached (contribution ≤ 0)':fc(pk.be)+' packs'}.`}
+function inputs(){const L=[['u1','Packs/store/week, wks 1–4'],['u2','Packs/store/week, wks 5–8'],['u3','Packs/store/week, wks 9–12'],['rp','Repeat purchase %'],['nt','Net receipts/pack, AED'],['vc','Variable cost/pack, AED'],['fx','Fixed cost, AED']];
+ $('#pin').innerHTML=L.map(([k,l])=>`<label>${l}<input type="number" min="0" step="any" id="i-${k}" value="${P[k]}"><em>Enter a value</em></label>`).join('');
+ L.forEach(([k])=>$('#i-'+k).oninput=e=>{const v=e.target.value;e.target.parentNode.classList.toggle('bad',v==='');if(v==='')return;P[k]=+v;pilot();kpis()})}
+function tables(){$('#tShelf').innerHTML=D.P.map(p=>`<tr${p.id==='gold'?' class="hl"':''}><td>${p.n}</td><td class="n">${p.g}</td><td class="n">${f2(p.pack)}</td><td>${p.packObs?'observed':'derived'}</td><td class="n">${f2(p.p100)}</td><td class="n">${p.id==='gold'?'—':'+'+f1(prem(p))+'%'}</td><td>${p.own?'yes':'no'}</td><td>${p.stock}</td></tr>`).join('');
+ $('#tRisk').innerHTML=D.RISKS.map(r=>`<tr><td><b>${r.r}</b></td><td>${r.trig}</td><td>${r.imp}</td><td>${r.mit}</td><td>${r.own}</td><td><span class="pill ${r.l==='High'?'hi':''}">${r.l}</span></td><td><span class="pill ${r.i==='High'?'hi':''}">${r.i}</span></td></tr>`).join('')}
+$('#reset').onclick=()=>{W=[...D.BW];P={...D.BASE};inputs();segs();pilot();kpis()};
+prices();trade();inputs();segs();pilot();tables();kpis();
+</script></body></html>
